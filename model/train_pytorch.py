@@ -15,14 +15,28 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
 
-def build_loaders(data_dir, batch, workers):
-    train_tf = transforms.Compose([
-        transforms.RandomResizedCrop(224, scale=(0.7, 1.0)),
-        transforms.RandomHorizontalFlip(),
-        transforms.ColorJitter(0.15, 0.15, 0.15),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-    ])
+def build_loaders(data_dir, batch, workers, aug="basic"):
+    if aug == "strong":
+        # 田间鲁棒增强: 对抗实验室->田间的域差(光照/背景/尺度/遮挡)
+        train_tf = transforms.Compose([
+            transforms.RandomResizedCrop(224, scale=(0.5, 1.0)),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
+            transforms.RandomGrayscale(p=0.1),
+            transforms.RandomApply([transforms.GaussianBlur(3)], p=0.2),
+            transforms.RandomAutocontrast(p=0.2),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+            transforms.RandomErasing(p=0.25, scale=(0.02, 0.15)),
+        ])
+    else:
+        train_tf = transforms.Compose([
+            transforms.RandomResizedCrop(224, scale=(0.7, 1.0)),
+            transforms.RandomHorizontalFlip(),
+            transforms.ColorJitter(0.15, 0.15, 0.15),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ])
     val_tf = transforms.Compose([
         transforms.Resize(256), transforms.CenterCrop(224),
         transforms.ToTensor(),
@@ -52,14 +66,17 @@ def main():
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--lr", type=float, default=3e-4)
+    ap.add_argument("--aug", default="basic", choices=["basic", "strong"],
+                    help="basic=常规增强; strong=田间鲁棒增强(域泛化)")
+    ap.add_argument("--out-suffix", default="", help="输出文件名后缀, 如 _robust")
     ap.add_argument("--out", default=os.path.join(os.path.dirname(__file__), "checkpoints"))
     args = ap.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"[HeYi] device = {device}")
+    print(f"[HeYi] device = {device}, aug = {args.aug}")
 
-    train_loader, val_loader, classes = build_loaders(args.data, args.batch, args.workers)
+    train_loader, val_loader, classes = build_loaders(args.data, args.batch, args.workers, args.aug)
     print(f"[HeYi] classes = {len(classes)}, train ~{len(train_loader.dataset)}, val ~{len(val_loader.dataset)}")
 
     model = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
@@ -104,7 +121,7 @@ def main():
                 "classes": classes,
                 "val_acc": acc, "epoch": ep,
                 "arch": "resnet18_transfer_layer4",
-            }, os.path.join(args.out, "best.pth"))
+            }, os.path.join(args.out, f"best{args.out_suffix}.pth"))
             print(f"[HeYi] saved best.pth (val_acc={acc:.4f})")
 
     with open(os.path.join(args.out, "meta.json"), "w", encoding="utf-8") as f:

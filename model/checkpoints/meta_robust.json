@@ -1,0 +1,10 @@
+{
+  "note": "强增强域泛化模型(robust)训练元数据。实例上meta.json曾被robust运行覆盖, 此文件为人工恢复的基线/鲁棒双版本记录。",
+  "classes_source": "同 meta.json (39类, 与best.pth/best_robust.pth一致)",
+  "best_val_acc": 0.9957,
+  "arch": "resnet18_transfer_layer4",
+  "aug": "strong (RandomResizedCrop0.5-1.0/ColorJitter0.4/RandomGrayscale/GaussianBlur/RandomAutocontrast/RandomErasing)",
+  "train_env": "AMD W7900, ROCm 7.2.4, PyTorch 2.10, batch128, 8epochs",
+  "plantdoc_top1": 0.3252,
+  "plantdoc_top2": 0.4425
+}

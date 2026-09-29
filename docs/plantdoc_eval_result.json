@@ -1,0 +1,116 @@
+{
+  "protocol": "PlantDoc test 236 real-field images -> 452 bbox leaf crops -> zero-shot inference by PlantVillage-trained ResNet18",
+  "n_crops": 452,
+  "top1_acc": 0.2832,
+  "top2_acc": 0.4071,
+  "per_class": {
+    "Apple Scab Leaf": {
+      "acc": 0.2308,
+      "n": 13
+    },
+    "Apple leaf": {
+      "acc": 0.2,
+      "n": 10
+    },
+    "Apple rust leaf": {
+      "acc": 0.0,
+      "n": 11
+    },
+    "Bell_pepper leaf": {
+      "acc": 0.4545,
+      "n": 11
+    },
+    "Bell_pepper leaf spot": {
+      "acc": 0.2667,
+      "n": 15
+    },
+    "Blueberry leaf": {
+      "acc": 0.3182,
+      "n": 22
+    },
+    "Cherry leaf": {
+      "acc": 0.0526,
+      "n": 19
+    },
+    "Corn Gray leaf spot": {
+      "acc": 0.5,
+      "n": 4
+    },
+    "Corn leaf blight": {
+      "acc": 0.5833,
+      "n": 12
+    },
+    "Corn rust leaf": {
+      "acc": 0.1,
+      "n": 10
+    },
+    "Peach leaf": {
+      "acc": 0.0,
+      "n": 10
+    },
+    "Potato leaf early blight": {
+      "acc": 0.1176,
+      "n": 17
+    },
+    "Potato leaf late blight": {
+      "acc": 0.1,
+      "n": 10
+    },
+    "Raspberry leaf": {
+      "acc": 0.4118,
+      "n": 17
+    },
+    "Soyabean leaf": {
+      "acc": 0.15,
+      "n": 20
+    },
+    "Squash Powdery mildew leaf": {
+      "acc": 1.0,
+      "n": 6
+    },
+    "Strawberry leaf": {
+      "acc": 0.3333,
+      "n": 30
+    },
+    "Tomato Early blight leaf": {
+      "acc": 0.3158,
+      "n": 19
+    },
+    "Tomato Septoria leaf spot": {
+      "acc": 0.5833,
+      "n": 24
+    },
+    "Tomato leaf": {
+      "acc": 0.037,
+      "n": 27
+    },
+    "Tomato leaf bacterial spot": {
+      "acc": 0.0,
+      "n": 14
+    },
+    "Tomato leaf late blight": {
+      "acc": 0.5,
+      "n": 14
+    },
+    "Tomato leaf mosaic virus": {
+      "acc": 0.0,
+      "n": 36
+    },
+    "Tomato leaf yellow virus": {
+      "acc": 0.8095,
+      "n": 42
+    },
+    "Tomato mold leaf": {
+      "acc": 0.0,
+      "n": 16
+    },
+    "grape leaf": {
+      "acc": 0.3333,
+      "n": 15
+    },
+    "grape leaf black rot": {
+      "acc": 0.0,
+      "n": 8
+    }
+  }
+}
