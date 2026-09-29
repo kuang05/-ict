@@ -1,0 +1,55 @@
+[HeYi] device = cuda
+[HeYi] classes = 39, train ~52676, val ~2772
+  ep1 step0/412 loss=3.8174
+  ep1 step100/412 loss=0.8361
+  ep1 step200/412 loss=0.7668
+  ep1 step300/412 loss=0.7779
+  ep1 step400/412 loss=0.7603
+[HeYi] epoch1 loss=0.8673 val_acc=0.9892 (27s)
+[HeYi] saved best.pth (val_acc=0.9892)
+  ep2 step0/412 loss=0.7668
+  ep2 step100/412 loss=0.7302
+  ep2 step200/412 loss=0.7196
+  ep2 step300/412 loss=0.7183
+  ep2 step400/412 loss=0.7127
+[HeYi] epoch2 loss=0.7356 val_acc=0.9906 (29s)
+[HeYi] saved best.pth (val_acc=0.9906)
+  ep3 step0/412 loss=0.7105
+  ep3 step100/412 loss=0.7107
+  ep3 step200/412 loss=0.7159
+  ep3 step300/412 loss=0.7078
+  ep3 step400/412 loss=0.7017
+[HeYi] epoch3 loss=0.7135 val_acc=0.9917 (31s)
+[HeYi] saved best.pth (val_acc=0.9917)
+  ep4 step0/412 loss=0.7013
+  ep4 step100/412 loss=0.6993
+  ep4 step200/412 loss=0.7074
+  ep4 step300/412 loss=0.7048
+  ep4 step400/412 loss=0.7072
+[HeYi] epoch4 loss=0.7032 val_acc=0.9913 (30s)
+  ep5 step0/412 loss=0.7020
+  ep5 step100/412 loss=0.6921
+  ep5 step200/412 loss=0.7085
+  ep5 step300/412 loss=0.6910
+  ep5 step400/412 loss=0.6954
+[HeYi] epoch5 loss=0.6960 val_acc=0.9917 (27s)
+  ep6 step0/412 loss=0.7006
+  ep6 step100/412 loss=0.6906
+  ep6 step200/412 loss=0.6884
+  ep6 step300/412 loss=0.6895
+  ep6 step400/412 loss=0.6873
+[HeYi] epoch6 loss=0.6910 val_acc=0.9931 (28s)
+[HeYi] saved best.pth (val_acc=0.9931)
+  ep7 step0/412 loss=0.6886
+  ep7 step100/412 loss=0.6830
+  ep7 step200/412 loss=0.6877
+  ep7 step300/412 loss=0.6848
+  ep7 step400/412 loss=0.6896
+[HeYi] epoch7 loss=0.6878 val_acc=0.9917 (28s)
+  ep8 step0/412 loss=0.6855
+  ep8 step100/412 loss=0.6838
+  ep8 step200/412 loss=0.6842
+  ep8 step300/412 loss=0.6929
+  ep8 step400/412 loss=0.6872
+[HeYi] epoch8 loss=0.6862 val_acc=0.9924 (27s)
+[HeYi] done. best_val_acc=0.9931

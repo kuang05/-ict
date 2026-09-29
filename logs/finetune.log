@@ -1,0 +1,21 @@
+[HeYi-FT] device=cuda classes=39
+[HeYi-FT] PV-train=52676 PV-val=2772 PD-crops=8325
+  ep1 step0/477 loss=1.3829
+  ep1 step150/477 loss=0.9632
+  ep1 step300/477 loss=0.9396
+  ep1 step450/477 loss=0.8805
+[HeYi-FT] epoch1 loss=0.9305 pv_val_acc=0.9895 (252s)
+[HeYi-FT] saved /root/he-yi/model/checkpoints/best_finetuned.pth (pv_val=0.9895)
+  ep2 step0/477 loss=0.8178
+  ep2 step150/477 loss=0.8285
+  ep2 step300/477 loss=0.8221
+  ep2 step450/477 loss=0.8536
+[HeYi-FT] epoch2 loss=0.8532 pv_val_acc=0.9921 (189s)
+[HeYi-FT] saved /root/he-yi/model/checkpoints/best_finetuned.pth (pv_val=0.9921)
+  ep3 step0/477 loss=0.8038
+  ep3 step150/477 loss=0.8349
+  ep3 step300/477 loss=0.8904
+  ep3 step450/477 loss=0.7410
+[HeYi-FT] epoch3 loss=0.8250 pv_val_acc=0.9924 (191s)
+[HeYi-FT] saved /root/he-yi/model/checkpoints/best_finetuned.pth (pv_val=0.9924)
+[HeYi-FT] done. best_pv_val=0.9924

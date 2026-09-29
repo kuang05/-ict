@@ -1,0 +1,35 @@
+crops=452 skipped=0
+{
+  "protocol": "PlantDoc test 236 real-field images -> 452 bbox leaf crops -> zero-shot inference by PlantVillage-trained ResNet18",
+  "n_crops": 452,
+  "top1_acc": 0.5597,
+  "top2_acc": 0.7434
+}
+  Apple Scab Leaf                         30.8%  n=13
+  Apple leaf                              50.0%  n=10
+  Apple rust leaf                         63.6%  n=11
+  Bell_pepper leaf                        72.7%  n=11
+  Bell_pepper leaf spot                   73.3%  n=15
+  Blueberry leaf                          81.8%  n=22
+  Cherry leaf                             21.1%  n=19
+  Corn Gray leaf spot                     25.0%  n=4
+  Corn leaf blight                        58.3%  n=12
+  Corn rust leaf                          40.0%  n=10
+  Peach leaf                              60.0%  n=10
+  Potato leaf early blight                41.2%  n=17
+  Potato leaf late blight                 50.0%  n=10
+  Raspberry leaf                          88.2%  n=17
+  Soyabean leaf                           45.0%  n=20
+  Squash Powdery mildew leaf             100.0%  n=6
+  Strawberry leaf                         93.3%  n=30
+  Tomato Early blight leaf                57.9%  n=19
+  Tomato Septoria leaf spot               62.5%  n=24
+  Tomato leaf                             14.8%  n=27
+  Tomato leaf bacterial spot              35.7%  n=14
+  Tomato leaf late blight                 50.0%  n=14
+  Tomato leaf mosaic virus                13.9%  n=36
+  Tomato leaf yellow virus                90.5%  n=42
+  Tomato mold leaf                        12.5%  n=16
+  grape leaf                              93.3%  n=15
+  grape leaf black rot                    87.5%  n=8
+saved -> /root/he-yi/docs/plantdoc_eval_result_finetuned.json
