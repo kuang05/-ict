@@ -6,5 +6,5 @@ d1.json
 
 # 大文件: 数据集与训练产物不入库(云端用脚本现下)
 data/plantvillage/
-model/checkpoints/
+# model/checkpoints/  # 权重作为参赛材料入库
 model/checkpoints_ms/

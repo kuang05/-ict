@@ -31,10 +31,14 @@ def build_loaders(data_dir, batch, workers):
     full = datasets.ImageFolder(data_dir, transform=train_tf)
     classes = full.classes
     n_val = max(1, int(len(full) * 0.05))          # 5%做验证集(数据量大,5%足够稳健)
-    train_set, val_set = torch.utils.data.random_split(
-        full, [len(full) - n_val, n_val], generator=torch.Generator().manual_seed(42))
-    val_set.dataset = datasets.ImageFolder(data_dir, transform=val_tf)  # val用评估变换
-    val_set.indices = list(range(len(full)))[-n_val:]
+    # 随机划分(跨所有类别), 避免按目录序取尾部导致的类别偏斜
+    g = torch.Generator().manual_seed(42)
+    perm = torch.randperm(len(full), generator=g).tolist()
+    val_idx, train_idx = perm[:n_val], perm[n_val:]
+    train_set = torch.utils.data.Subset(
+        datasets.ImageFolder(data_dir, transform=train_tf), train_idx)
+    val_set = torch.utils.data.Subset(
+        datasets.ImageFolder(data_dir, transform=val_tf), val_idx)
     train_loader = DataLoader(train_set, batch_size=batch, shuffle=True,
                               num_workers=workers, pin_memory=True)
     val_loader = DataLoader(val_set, batch_size=batch, shuffle=False,

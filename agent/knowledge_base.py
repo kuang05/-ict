@@ -5,6 +5,23 @@ import json, os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
 KB_PATH = os.path.join(HERE, "..", "data", "knowledge", "diseases.json")
 
+# 数据集命名差异归一: GitHub版含 (maize)/(including_sour) 与尾部下划线, Mendeley版没有
+_ALIASES = {
+    "corn___common_rust": "Corn_(maize)___Common_rust_",
+    "corn___cercospora_leaf_spot gray_leaf_spot": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+    "corn___northern_leaf_blight": "Corn_(maize)___Northern_Leaf_Blight",
+    "corn___healthy": "Corn_(maize)___healthy",
+    "cherry___powdery_mildew": "Cherry_(including_sour)___Powdery_mildew",
+    "cherry___healthy": "Cherry_(including_sour)___healthy",
+}
+
+def normalize(class_name: str) -> str:
+    """任意命名风格 -> 知识库规范键; 兼容Mendeley/GitHub两种数据集命名。"""
+    key = class_name.strip().rstrip("_").lower()
+    key = re.sub(r"\((maize|including_sour)\)", "", key)   # 去掉括号作物注记
+    key = re.sub(r"\s+", " ", key).strip().rstrip("_")
+    return _ALIASES.get(key, class_name)
+
 class KnowledgeBase:
     def __init__(self, path=KB_PATH):
         raw = json.load(open(path, encoding="utf-8"))
@@ -18,10 +35,12 @@ class KnowledgeBase:
             self.index[class_id] = tokens
 
     def get(self, class_name: str) -> dict:
-        """按PlantVillage类别名取完整方案。"""
+        """按PlantVillage类别名取完整方案(自动做命名归一)。"""
         if class_name in self.diseases and not class_name.startswith("_"):
             return self.diseases[class_name]
-        base = class_name
+        base = normalize(class_name)
+        if base in self.diseases and not base.startswith("_"):
+            return self.diseases[base]
         if base in self.quick:
             full = dict(self.diseases.get(base, {}))
             full.update(self.quick[base])
