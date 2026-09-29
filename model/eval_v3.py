@@ -1,37 +1,52 @@
 # -*- coding: utf-8 -*-
 """
-禾医 · 27 类田间模型评测 (含 TTA)
-==================================
-与 eval_v2.py 的区别: eval_v2 评的是 39 类 PlantVillage 模型(需掩膜),
-本脚本评的是 train_field_v2.py 产出的 **27 类输出空间**模型。
-
-评测特性
---------
-* TTA(测试时增强): 多尺度(224/288) x 水平翻转 x 中心/五切, 概率平均。
-  单视角推理方差大, TTA 是零训练成本的稳定增益。
-* 报告 top1 / top3 / 作物级准确率 / 每类准确率 / 高频混淆对。
-* 支持在 val(模型选择) 与 test(最终报告) 两个 split 上评测。
+禾医 · 田间模型评测 v3 (适配 27 类输出空间 + TTA)
+==================================================
+与 v1(eval_plantdoc.py) 的关键差异
+----------------------------------
+1. v1 只能评 39 类模型; v3 评 train_field_v2.py 产出的 **27 类** 模型。
+2. 评测数据用 prepare_plantdoc.py 产出的 **原图级留出** test(452 裁叶),
+   与训练划分协议严格一致, 可复现。
+3. 支持 **TTA**(多尺度 x 翻转) —— 零训练成本的稳定增益。
+4. 权重加载兼容 MixStyle 包装(训练时 layer1 被包成 Sequential,
+   state_dict 键形如 "layer1.0.xxx"), 这里自动还原为标准键。
 
 用法
 ----
-/opt/venv/bin/python model/eval_v3.py --ckpt model/checkpoints/best_v2.pth \
-    --split test --tta
+/opt/venv/bin/python model/eval_v3.py --ckpt model/checkpoints/best_v2_r50.pth --backbone resnet50 --tta
 """
 import argparse, collections, json, os
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader
-from torchvision import datasets, models, transforms
+from PIL import Image
+from torch.utils.data import DataLoader, Dataset
+from torchvision import models, transforms
 
 from prepare_plantdoc import PD2PV
 
 CLASSES27 = sorted(set(PD2PV.values()))
-CROP_OF = {c: c.split("___")[0].lower().replace("pepper,_bell", "pepper")
-           for c in CLASSES27}
+C2I = {c: i for i, c in enumerate(CLASSES27)}
 
 
-def build_net(backbone, n_cls, ckpt_path, device):
+def crop_of(pv_class):
+    c = pv_class.split("___")[0].lower()
+    return {"pepper,_bell": "pepper"}.get(c, c)
+
+
+def unwrap_mixstyle_keys(sd):
+    """把 "layerN.0.xxx" 还原为 "layerN.xxx"(MixStyle 无参数, 不进 state_dict)"""
+    out = {}
+    for k, v in sd.items():
+        for name in ("layer1", "layer2", "layer3"):
+            if k.startswith(name + ".0."):
+                k = name + "." + k[len(name + ".0."):]
+                break
+        out[k] = v
+    return out
+
+
+def build_net(backbone, n_cls):
     if backbone == "resnet50":
         net = models.resnet50(weights=None)
         net.fc = nn.Linear(net.fc.in_features, n_cls)
@@ -43,126 +58,124 @@ def build_net(backbone, n_cls, ckpt_path, device):
         net.classifier[1] = nn.Linear(net.classifier[1].in_features, n_cls)
     else:
         raise ValueError(backbone)
-    ck = torch.load(ckpt_path, map_location="cpu", weights_only=False)
-    net.load_state_dict(ck["model"])
-    return net.to(device).eval()
+    return net
 
 
-def make_batch_tf(size, five_crop=False):
-    base = [
-        transforms.Resize(int(size * 1.15)),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-    ]
-    if five_crop:
-        return transforms.Compose([
-            transforms.Resize(int(size * 1.4)),
-            transforms.FiveCrop(size),
-            transforms.Lambda(lambda crops: torch.stack(
-                [transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])(
-                    transforms.ToTensor()(c)) for c in crops])),
-        ])
-    return transforms.Compose([
-        transforms.Resize(int(size * 1.15)),
-        transforms.CenterCrop(size),
-        *base[1:],
-    ])
+class CropSet(Dataset):
+    def __init__(self, root, tf):
+        self.items = []
+        for cls in sorted(os.listdir(root)):
+            d = os.path.join(root, cls)
+            if not os.path.isdir(d) or cls not in C2I:
+                continue
+            for f in sorted(os.listdir(d)):
+                if f.lower().endswith((".jpg", ".jpeg", ".png")):
+                    self.items.append((os.path.join(d, f), C2I[cls]))
+        self.tf = tf
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, i):
+        p, y = self.items[i]
+        return self.tf(Image.open(p).convert("RGB")), y
+
+
+def make_tf(size, flip=False):
+    ops = [transforms.Resize(int(size * 1.15)), transforms.CenterCrop(size)]
+    if flip:
+        ops.append(transforms.RandomHorizontalFlip(p=1.0))
+    ops += [transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]
+    return transforms.Compose(ops)
 
 
 @torch.no_grad()
-def predict(net, loader, device, tta=True):
-    """返回 (N, C) 概率与 (N,) 标签"""
-    probs, gts = [], []
-    for x, y in loader:
-        gts.extend(y.tolist())
-        x = x.to(device)
-        if x.dim() == 5:  # five-crop: (B, 5, C, H, W)
-            B, K = x.shape[0], x.shape[1]
-            p = net(x.view(B * K, *x.shape[2:])).view(B, K, -1).mean(1)
-        else:
-            p = net(x)
-        probs.append(torch.softmax(p.float(), 1).cpu().numpy())
-        gts = gts[:sum(len(q) for q in probs)] if False else gts
-    return np.concatenate(probs), np.array(gts)
+def run(net, ds_root, device, sizes, flips, batch=64, workers=8):
+    prob_sum, labels = None, None
+    for size in sizes:
+        for flip in flips:
+            ds = CropSet(ds_root, make_tf(size, flip))
+            loader = DataLoader(ds, batch_size=batch, num_workers=workers, pin_memory=True)
+            probs, ys = [], []
+            for x, y in loader:
+                p = torch.softmax(net(x.to(device)).float(), dim=1).cpu().numpy()
+                probs.append(p); ys.extend(y.tolist())
+            p = np.concatenate(probs)
+            prob_sum = p if prob_sum is None else prob_sum + p
+            labels = np.array(ys)
+    return prob_sum / (len(sizes) * len(flips)), labels
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", required=True)
-    ap.add_argument("--pd-root", default="/root/data/pd_v2")
-    ap.add_argument("--split", default="test", choices=["train", "val", "test"])
+    ap.add_argument("--data", default="/root/data/pd_v2/test")
     ap.add_argument("--backbone", default="resnet50")
     ap.add_argument("--batch", type=int, default=64)
-    ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--tta", type=int, default=1)
     ap.add_argument("--out", default="")
     args = ap.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    split_dir = os.path.join(args.pd_root, args.split)
-    if not os.path.isdir(split_dir):
-        raise SystemExit(f"split 目录不存在: {split_dir}")
-
-    variants = [("center", 224, False)]
-    if args.tta:
-        variants += [("center", 288, False), ("five", 224, True)]
-
     ck = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     classes = ck.get("classes", CLASSES27)
     n_cls = len(classes)
-    net = build_net(args.backbone, n_cls, args.ckpt, device)
+    net = build_net(args.backbone, n_cls)
+    sd = unwrap_mixstyle_keys(ck["model"])
+    missing, unexpected = net.load_state_dict(sd, strict=False)
+    net.eval().to(device)
     print(f"[eval-v3] ckpt={args.ckpt} backbone={args.backbone} classes={n_cls} "
-          f"split={args.split} tta={bool(args.tta)} device={device}")
+          f"device={device} tta={bool(args.tta)}")
+    if missing:
+        print(f"[eval-v3] 缺失键 {len(missing)}: {missing[:3]}")
+    if unexpected:
+        print(f"[eval-v3] 多余键 {len(unexpected)}: {unexpected[:3]}")
 
-    acc_prob, labels = None, None
-    for name, size, five in variants:
-        tf = make_batch_tf(size, five)
-        ds = datasets.ImageFolder(split_dir, transform=tf)
-        # ImageFolder 目录顺序即 classes 顺序, 需与训练一致
-        if list(ds.classes) != list(classes):
-            remap = [classes.index(c) for c in ds.classes]
-            ds.samples = [(p, remap[y]) for p, y in ds.samples]
-            ds.targets = [remap[y] for y in ds.targets]
-        loader = DataLoader(ds, batch_size=args.batch, num_workers=args.workers)
-        p, y = predict(net, loader, device)
-        acc_prob = p if acc_prob is None else acc_prob + p
-        labels = y
-    probs = acc_prob / len(variants)
-
+    sizes = [224, 288] if args.tta else [224]
+    flips = [False, True] if args.tta else [False]
+    probs, gts = run(net, args.data, device, sizes, flips, args.batch)
     pred = probs.argmax(1)
     top3 = np.argsort(-probs, axis=1)[:, :3]
-    n = len(labels)
-    top1 = float((pred == labels).mean())
-    top3acc = float(sum(l in t for t, l in zip(top3, labels)) / n)
 
-    crop_ok = sum(CROP_OF.get(classes[p], "?") == CROP_OF.get(classes[l], "?")
-                  for p, l in zip(pred, labels))
-    per_class, conf = collections.defaultdict(lambda: [0, 0]), collections.Counter()
-    for p, l in zip(pred, labels):
-        per_class[classes[l]][1] += 1
-        per_class[classes[l]][0] += int(p == l)
-        if p != l:
-            conf[f"{classes[l]} -> {classes[p]}"] += 1
+    n = len(gts)
+    top1 = float((pred == gts).mean())
+    top3acc = float(sum(g in t for t, g in zip(top3, gts)) / n)
+    crop_ok = np.array([crop_of(classes[p]) == crop_of(classes[g])
+                        for p, g in zip(pred, gts)])
+    crop_acc = float(crop_ok.mean())
+    dis_given_crop = float((pred[crop_ok] == gts[crop_ok]).mean()) if crop_ok.any() else 0.0
+
+    per = collections.defaultdict(lambda: [0, 0])
+    conf = collections.Counter()
+    for p, g in zip(pred, gts):
+        per[classes[g]][1] += 1
+        per[classes[g]][0] += int(p == g)
+        if p != g:
+            conf[f"{classes[g]} -> {classes[p]}"] += 1
 
     res = {
-        "ckpt": args.ckpt, "backbone": args.backbone, "split": args.split,
-        "n_samples": n, "tta": bool(args.tta), "protocol": "27类输出空间",
+        "ckpt": args.ckpt, "backbone": args.backbone, "n_classes": n_cls,
+        "protocol": "PlantDoc 原图级留出 test(452 裁叶), 27类输出空间",
+        "tta": bool(args.tta), "n_test": n,
         "top1": round(top1, 4), "top3": round(top3acc, 4),
-        "crop_acc": round(crop_ok / n, 4),
+        "crop_acc": round(crop_acc, 4),
+        "disease_acc_given_crop_correct": round(dis_given_crop, 4),
         "per_class": {k: {"acc": round(v[0] / v[1], 4), "n": v[1]}
-                      for k, v in sorted(per_class.items())},
+                      for k, v in sorted(per.items())},
         "top_confusions": [{"pair": k, "n": v} for k, v in conf.most_common(12)],
     }
     print(json.dumps({k: v for k, v in res.items()
-                      if k not in ("per_class", "top_confusions")}, indent=2))
-    print("\n--- 每类准确率 ---")
-    for k, v in res["per_class"].items():
+                      if k not in ("per_class", "top_confusions")},
+                     indent=2, ensure_ascii=False))
+    print("\n--- 每类 ---")
+    for k, v in sorted(res["per_class"].items(), key=lambda kv: kv[1]["acc"]):
         print(f"  {k:44s} {v['acc']*100:5.1f}%  n={v['n']}")
     print("\n--- 高频混淆 ---")
     for c in res["top_confusions"]:
         print(f"  {c['n']:3d}  {c['pair']}")
 
-    out = args.out or f"/root/he-yi/docs/eval_{args.split}_{os.path.basename(args.ckpt).replace('.pth','')}.json"
+    out = args.out or (args.ckpt.replace(".pth", "_eval.json"))
     os.makedirs(os.path.dirname(out), exist_ok=True)
     json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     print("\nsaved ->", out)

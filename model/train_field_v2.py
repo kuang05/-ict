@@ -136,15 +136,17 @@ def scan_dir(root, per_class=None, seed=42):
 
 
 # ---------------------------------------------------------------- 模型
-def build_model(backbone, use_mixstyle):
+def build_model(backbone, use_mixstyle, init=None):
+    """init: 本地权重文件(如 PlantVillage 预训练的 best_robust.pth)。
+    它比 ImageNet 预训练更贴近病害特征; 分类头因输出空间变化会被跳过重建。"""
     if backbone == "resnet50":
-        net = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
+        net = models.resnet50(weights=None if init else models.ResNet50_Weights.IMAGENET1K_V2)
         net.fc = nn.Linear(net.fc.in_features, len(CLASSES27))
         if use_mixstyle:
             net.layer1 = nn.Sequential(net.layer1, MixStyle())
             net.layer2 = nn.Sequential(net.layer2, MixStyle())
     elif backbone == "resnet18":
-        net = models.resnet18(weights=models.ResNet18_Weights.IMAGENET1K_V1)
+        net = models.resnet18(weights=None if init else models.ResNet18_Weights.IMAGENET1K_V1)
         net.fc = nn.Linear(net.fc.in_features, len(CLASSES27))
         if use_mixstyle:
             net.layer1 = nn.Sequential(net.layer1, MixStyle())
@@ -162,6 +164,20 @@ def build_model(backbone, use_mixstyle):
             )
     else:
         raise ValueError(f"unknown backbone {backbone}")
+
+    if init and os.path.exists(init):
+        ck = torch.load(init, map_location="cpu", weights_only=False)
+        src = ck.get("model", ck)
+        own = net.state_dict()
+        n_loaded = 0
+        for k, v in src.items():
+            if k in own and own[k].shape == v.shape:
+                own[k] = v
+                n_loaded += 1
+        net.load_state_dict(own, strict=False)
+        print(f"[init] 从 {init} 迁移 {n_loaded}/{len(own)} 层(分类头按 27 类重建)")
+    elif init:
+        print(f"[init] 警告: {init} 不存在, 回退到随机初始化")
     return net
 
 
@@ -213,6 +229,9 @@ def main():
     ap.add_argument("--pv-per-class", type=int, default=600)
     ap.add_argument("--pd-repeat", type=int, default=3,
                     help="目标域数据重复采样次数(提升田间分布占比)")
+    ap.add_argument("--init", default="",
+                    help="本地预训练权重(如 PlantVillage 训练的 best_robust.pth); "
+                         "给定时不再下载 ImageNet 权重")
     ap.add_argument("--no-mixstyle", action="store_true", help="消融: 关闭 MixStyle")
     ap.add_argument("--out", default="/root/he-yi/model/checkpoints/best_v2.pth")
     ap.add_argument("--tag", default="v2")

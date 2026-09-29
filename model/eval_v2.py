@@ -42,18 +42,29 @@ def crop_of(pv_class):
 
 
 class CropDS(Dataset):
-    """按目录名读取 27 类裁叶。目录名即 PlantVillage 类名。"""
+    """按目录名读取裁叶。
 
-    def __init__(self, root, tf):
+    关键点: 标签必须用**模型输出空间的索引**。39 类模型与 27 类模型的类名->下标
+    映射不同, 若统一用 27 类下标, 则与 39 类模型的 argmax 结果错位, 会导致
+    top1 被严重低估(表现为"作物认对率很高但 top1 极低")。
+    """
+
+    def __init__(self, root, tf, c2i):
         self.items = []
+        skipped = set()
         for cls in sorted(os.listdir(root)):
             d = os.path.join(root, cls)
-            if not os.path.isdir(d) or cls not in C2I27:
+            if not os.path.isdir(d):
+                continue
+            if cls not in c2i:
+                skipped.add(cls)
                 continue
             for f in os.listdir(d):
                 if f.lower().endswith((".jpg", ".jpeg", ".png")):
-                    self.items.append((os.path.join(d, f), C2I27[cls]))
+                    self.items.append((os.path.join(d, f), c2i[cls]))
         self.tf = tf
+        if skipped:
+            print(f"[eval-v2] 跳过不在模型输出空间的目录: {sorted(skipped)}")
 
     def __len__(self):
         return len(self.items)
@@ -136,7 +147,7 @@ def main():
         mask27 = sorted(c2i[c] for c in CLASSES27 if c in c2i)
         print(f"[eval-v2] 39类模型 -> 掩膜到 {len(mask27)} 个 PlantDoc 有效类")
 
-    ds = CropDS(args.data, tf_val(224))
+    ds = CropDS(args.data, tf_val(224), c2i)
     print(f"[eval-v2] 测试样本 {len(ds)}")
 
     gts = np.array([y for _, y in ds.items])
@@ -144,7 +155,6 @@ def main():
     pred = probs.argmax(1)
     top3 = np.argsort(-probs, axis=1)[:, :3]
 
-    # 掩膜后 top1 的类别索引可能属于 39 类空间, 统一映射回"PD 27 类"语义做作物归因
     def cls_of(i):
         return classes[i]
 
@@ -152,7 +162,7 @@ def main():
     top1 = float((pred == gts).mean())
     top3acc = float(sum(g in t3 for t3, g in zip(top3, gts)) / n)
 
-    gt_crop = np.array([crop_of(CLASSES27[g]) for g in gts])
+    gt_crop = np.array([crop_of(cls_of(g)) for g in gts])
     pred_crop = np.array([crop_of(cls_of(p)) for p in pred])
     crop_acc = float((gt_crop == pred_crop).mean())
     correct_crop = gt_crop == pred_crop
@@ -160,7 +170,7 @@ def main():
         if correct_crop.any() else 0.0
 
     per_class = {}
-    for i, c in enumerate(CLASSES27):
+    for i, c in enumerate(classes):
         sel = gts == i
         if sel.any():
             per_class[c] = {"acc": round(float((pred[sel] == i).mean()), 4), "n": int(sel.sum())}
@@ -168,7 +178,7 @@ def main():
     conf = Counter()
     for g, p in zip(gts, pred):
         if g != p:
-            conf[f"{CLASSES27[g]} -> {cls_of(p)}"] += 1
+            conf[f"{cls_of(g)} -> {cls_of(p)}"] += 1
 
     res = {
         "ckpt": args.ckpt,
