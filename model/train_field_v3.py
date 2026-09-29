@@ -1,0 +1,291 @@
+# -*- coding: utf-8 -*-
+"""
+禾医 · 田间域适应训练 v3
+========================
+为什么是 v3
+-----------
+v2 用 `net.layer1 = nn.Sequential(net.layer1, MixStyle())` 的方式插入 MixStyle。
+这带来一个隐蔽而致命的副作用: **标准 ResNet 的 layerN 本身就是
+nn.Sequential(Bottleneck, ...), 其 state_dict 键本来就形如 "layer3.0.conv1.weight"**。
+插入 MixStyle 后键变成三层 "layer3.0.0.conv1.weight", 而任何试图"清洗前缀"的逻辑
+都会误伤未包装层的标准键(把 "layer3.0." 吃成 "layer3."), 使同一 layer 内多个
+block 的参数互相覆盖 —— 保存出的 checkpoint 表面能加载、实则权重错乱,
+指标退化到随机水平(top1 个位数), 且 `strict=False` 不会报错。
+
+v3 的做法
+---------
+**MixStyle 外挂**: backbone 保持 torchvision 原生结构不动(键完全标准),
+MixStyle 作为独立无参数模块在 forward 中显式调用。这样
+* 保存的 state_dict 100% 标准, 任何评测端都能直接 strict=True 加载;
+* MixStyle 仍作用于 layer1/layer2 输出, 域泛化效果不变。
+
+其余沿用 v2 的有效设计:
+* 输出空间 = PlantDoc 27 类
+* 源域 PlantVillage 27 类子集 + 目标域 PlantDoc train 混合, 目标域重复采样
+* 类别权重损失缓解长尾
+* **用 PlantDoc val(原图级划分)选模型**, 而不是 PlantVillage 同域 val
+
+用法
+----
+/opt/venv/bin/python model/train_field_v3.py --epochs 20 --backbone resnet50
+"""
+import argparse, json, os, random, time
+from collections import Counter
+
+import numpy as np
+import torch
+import torch.nn as nn
+from PIL import Image
+from torch.utils.data import DataLoader, Dataset
+from torchvision import models, transforms
+
+from prepare_plantdoc import PD2PV
+
+CLASSES27 = sorted(set(PD2PV.values()))
+C2I27 = {c: i for i, c in enumerate(CLASSES27)}
+
+
+class MixStyle(nn.Module):
+    """随机混合 batch 内样本的通道均值/方差(风格统计量)。
+
+    Zhou et al., "Domain Generalization with MixStyle", CVPR 2021.
+    仅在训练时生效; 无参数, 因此不进入 state_dict。
+    """
+
+    def __init__(self, p=0.5, alpha=0.1, eps=1e-6):
+        super().__init__()
+        self.p, self.alpha, self.eps = p, alpha, eps
+
+    def forward(self, x):
+        if not self.training or random.random() > self.p:
+            return x
+        B = x.size(0)
+        if B < 2:
+            return x
+        mu = x.mean(dim=(2, 3), keepdim=True).detach()
+        var = x.var(dim=(2, 3), keepdim=True).detach()
+        sig = (var + self.eps).sqrt()
+        x_normed = (x - mu) / sig
+        perm = torch.randperm(B, device=x.device)
+        lmda = float(np.clip(np.random.beta(self.alpha, self.alpha), 0.0, 1.0))
+        mu_mix = mu * lmda + mu[perm] * (1.0 - lmda)
+        sig_mix = sig * lmda + sig[perm] * (1.0 - lmda)
+        return x_normed * sig_mix + mu_mix
+
+    def __repr__(self):
+        return f"MixStyle(p={self.p}, alpha={self.alpha})"
+
+
+class Net(nn.Module):
+    """backbone 保持原生结构; MixStyle 外挂于 layer1/layer2 之后。
+
+    state_dict 与标准 torchvision 模型完全一致, 评测端可直接加载。
+    """
+
+    def __init__(self, backbone="resnet50", n_cls=27, mix_p=0.5):
+        super().__init__()
+        builder = {"resnet18": models.resnet18,
+                   "resnet50": models.resnet50}.get(backbone)
+        if builder is None:
+            raise ValueError(backbone)
+        self.backbone = builder(weights=None)
+        feat = self.backbone.fc.in_features
+        self.backbone.fc = nn.Linear(feat, n_cls)
+        self.mix1 = MixStyle(mix_p)
+        self.mix2 = MixStyle(mix_p)
+
+    def forward(self, x):
+        b = self.backbone
+        x = b.conv1(x)
+        x = b.bn1(x)
+        x = b.relu(x)
+        x = b.maxpool(x)
+        x = self.mix1(b.layer1(x))
+        x = self.mix2(b.layer2(x))
+        x = b.layer3(x)
+        x = b.layer4(x)
+        x = b.avgpool(x)
+        x = torch.flatten(x, 1)
+        return b.fc(x)
+
+
+def tf_train():
+    return transforms.Compose([
+        transforms.RandomResizedCrop(224, scale=(0.5, 1.0)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomVerticalFlip(p=0.2),
+        transforms.RandomApply([transforms.ColorJitter(0.5, 0.5, 0.5, 0.15)], p=0.8),
+        transforms.RandomGrayscale(p=0.1),
+        transforms.RandomApply([transforms.GaussianBlur(3)], p=0.3),
+        transforms.RandomAutocontrast(p=0.2),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        transforms.RandomErasing(p=0.3, scale=(0.02, 0.2)),
+    ])
+
+
+def tf_val():
+    return transforms.Compose([
+        transforms.Resize(256), transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    ])
+
+
+class ListDS(Dataset):
+    def __init__(self, items, tf):
+        self.items, self.tf = items, tf
+
+    def __len__(self):
+        return len(self.items)
+
+    def __getitem__(self, i):
+        p, y = self.items[i]
+        return self.tf(Image.open(p).convert("RGB")), y
+
+
+def scan_dir(root, per_class=None, seed=42):
+    rng = random.Random(seed)
+    items = []
+    for cls in sorted(os.listdir(root)):
+        d = os.path.join(root, cls)
+        if not os.path.isdir(d) or cls not in C2I27:
+            continue
+        files = [os.path.join(d, f) for f in sorted(os.listdir(d))
+                 if f.lower().endswith((".jpg", ".jpeg", ".png"))]
+        rng.shuffle(files)
+        if per_class:
+            files = files[:per_class]
+        items.extend((p, C2I27[cls]) for p in files)
+    return items
+
+
+@torch.no_grad()
+def evaluate(net, loader, device):
+    net.eval()
+    correct = total = 0
+    for x, y in loader:
+        x, y = x.to(device), y.to(device)
+        with torch.amp.autocast("cuda", enabled=(device == "cuda")):
+            p = net(x).argmax(1)
+        correct += (p == y).sum().item()
+        total += y.size(0)
+    net.train()
+    return correct / max(total, 1)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--pv-data", default="/root/data/pv/Plant_leave_diseases_dataset_without_augmentation")
+    ap.add_argument("--pd-root", default="/root/data/pd_v2")
+    ap.add_argument("--backbone", default="resnet50", choices=["resnet18", "resnet50"])
+    ap.add_argument("--epochs", type=int, default=20)
+    ap.add_argument("--batch", type=int, default=64)
+    ap.add_argument("--lr", type=float, default=3e-4)
+    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--pv-per-class", type=int, default=600)
+    ap.add_argument("--pd-repeat", type=int, default=3)
+    ap.add_argument("--mix-p", type=float, default=0.5)
+    ap.add_argument("--no-mixstyle", action="store_true")
+    ap.add_argument("--init", default="", help="可选: 本地权重初始化(不下载 ImageNet)")
+    ap.add_argument("--out", default="/root/he-yi/model/checkpoints/best_v3.pth")
+    ap.add_argument("--tag", default="v3")
+    args = ap.parse_args()
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    torch.manual_seed(42)
+    random.seed(42)
+    np.random.seed(42)
+
+    pv = scan_dir(args.pv_data, args.pv_per_class)
+    pd_train = scan_dir(os.path.join(args.pd_root, "train"))
+    pd_val = scan_dir(os.path.join(args.pd_root, "val"))
+    if not pd_train:
+        raise SystemExit("目标域训练集为空, 请先运行 prepare_plantdoc.py")
+
+    train_items = pv + pd_train * args.pd_repeat
+    random.shuffle(train_items)
+    print(f"[v3] device={device} backbone={args.backbone} mixstyle={not args.no_mixstyle}")
+    print(f"[v3] PV27={len(pv)} PD-train={len(pd_train)}x{args.pd_repeat} "
+          f"PD-val={len(pd_val)} total={len(train_items)}")
+
+    cnt = Counter(y for _, y in train_items)
+    w = np.array([1.0 / np.sqrt(max(cnt[i], 1)) for i in range(len(CLASSES27))])
+    w = w / w.mean()
+    class_w = torch.tensor(w, dtype=torch.float32, device=device)
+
+    train_loader = DataLoader(ListDS(train_items, tf_train()), batch_size=args.batch,
+                              shuffle=True, num_workers=args.workers,
+                              pin_memory=True, drop_last=True)
+    val_loader = DataLoader(ListDS(pd_val, tf_val()), batch_size=args.batch,
+                            num_workers=args.workers, pin_memory=True)
+
+    net = Net(args.backbone, len(CLASSES27), 0.0 if args.no_mixstyle else args.mix_p)
+
+    if args.init and os.path.exists(args.init):
+        ck = torch.load(args.init, map_location="cpu", weights_only=False)
+        src = normalize_src(ck.get("model", ck))
+        missing, unexpected = net.backbone.load_state_dict(src, strict=False)
+        print(f"[v3] 从 {args.init} 初始化 backbone: missing={len(missing)} unexpected={len(unexpected)}")
+
+    net = net.to(device)
+    opt = torch.optim.AdamW(net.parameters(), lr=args.lr, weight_decay=1e-4)
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
+    loss_fn = nn.CrossEntropyLoss(weight=class_w, label_smoothing=0.1)
+    scaler = torch.amp.GradScaler("cuda", enabled=(device == "cuda"))
+
+    os.makedirs(os.path.dirname(args.out), exist_ok=True)
+    best, best_ep, history = 0.0, 0, []
+    for ep in range(1, args.epochs + 1):
+        net.train()
+        t0 = time.time()
+        running, nb = 0.0, 0
+        for x, y in train_loader:
+            x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
+            opt.zero_grad(set_to_none=True)
+            with torch.amp.autocast("cuda", enabled=(device == "cuda")):
+                loss = loss_fn(net(x), y)
+            scaler.scale(loss).backward()
+            scaler.step(opt)
+            scaler.update()
+            running += loss.item()
+            nb += 1
+        sched.step()
+        acc = evaluate(net, val_loader, device)
+        history.append({"epoch": ep, "loss": round(running / max(nb, 1), 4),
+                        "pd_val_acc": round(acc, 4)})
+        print(f"[v3] epoch{ep} loss={running/max(nb,1):.4f} PDval={acc:.4f} "
+              f"({time.time()-t0:.0f}s)", flush=True)
+        if acc > best:
+            best, best_ep = acc, ep
+            # backbone 原生结构 -> 键标准, 评测端可直接 strict 加载
+            torch.save({"model": net.state_dict(), "classes": CLASSES27,
+                        "backbone": args.backbone, "mix_p": args.mix_p,
+                        "pd_val_acc": acc, "epoch": ep,
+                        "protocol": "PlantDoc 27类输出空间; 原图级划分 val"},
+                       args.out)
+            print(f"[v3] saved {args.out} (PDval={acc:.4f})", flush=True)
+
+    rec = {"tag": args.tag, "args": vars(args), "best_pd_val_acc": round(best, 4),
+           "best_epoch": best_ep, "history": history}
+    rec_path = args.out.replace(".pth", "_train_record.json")
+    with open(rec_path, "w", encoding="utf-8") as f:
+        json.dump(rec, f, ensure_ascii=False, indent=2)
+    print(f"[v3] done. best_PD_val={best:.4f} @ep{best_ep} -> {rec_path}")
+
+
+def normalize_src(sd):
+    """兼容不同来源的初始化权重: 去掉可能的 MixStyle 包装前缀(三层键)"""
+    out = {}
+    for k, v in sd.items():
+        for n in ("layer1", "layer2", "layer3", "layer4"):
+            pre = n + ".0.0."
+            if k.startswith(pre):
+                k = n + "." + k[len(pre):]
+                break
+        out[k] = v
+    return out
+
+
+if __name__ == "__main__":
+    main()

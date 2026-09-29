@@ -266,7 +266,7 @@ def main():
     val_loader = DataLoader(ListDataset(pd_val, tf_val()), batch_size=args.batch,
                             num_workers=args.workers, pin_memory=True)
 
-    net = build_model(args.backbone, not args.no_mixstyle).to(device)
+    net = build_model(args.backbone, not args.no_mixstyle, init=args.init).to(device)
     opt = torch.optim.AdamW(net.parameters(), lr=args.lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=args.epochs)
     loss_fn = nn.CrossEntropyLoss(weight=class_w, label_smoothing=0.1)

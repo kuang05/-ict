@@ -1,0 +1,24 @@
+{
+  "ckpt": "model/checkpoints/best_finetuned.pth",
+  "backbone": "resnet18",
+  "tta": true,
+  "n_test": 452,
+  "protocol": "PlantDoc 原图级留出 test(452 裁叶)",
+  "results": [
+    {
+      "mode": "flat_argmax_27",
+      "top1": 0.0332,
+      "top3": 0.0973,
+      "crop_acc": 0.0575,
+      "disease_acc_given_crop_correct": 0.0
+    },
+    {
+      "mode": "two_stage_crop_then_disease",
+      "top1": 0.0332,
+      "top3": 0.0973,
+      "crop_acc": 0.0575,
+      "disease_acc_given_crop_correct": 0.0
+    }
+  ],
+  "crop_selection_acc": 0.0575
+}

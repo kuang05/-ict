@@ -1,0 +1,1 @@
+[eval-v4] 权重加载失败, 已中止(避免静默降级): missing=48['layer3.0.conv1.weight', 'layer3.0.bn1.weight', 'layer3.0.bn1.bias', 'layer3.0.bn1.running_mean'] unexpected=48['layer3.conv1.weight', 'layer3.bn1.weight', 'layer3.bn1.bias', 'layer3.bn1.running_mean']

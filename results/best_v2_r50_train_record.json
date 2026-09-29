@@ -1,0 +1,150 @@
+{
+  "tag": "v2_r50",
+  "args": {
+    "pv_data": "/root/data/pv/Plant_leave_diseases_dataset_without_augmentation",
+    "pd_root": "/root/data/pd_v2",
+    "backbone": "resnet50",
+    "epochs": 20,
+    "batch": 64,
+    "lr": 0.0003,
+    "workers": 8,
+    "pv_per_class": 600,
+    "pd_repeat": 3,
+    "no_mixstyle": false,
+    "out": "model/checkpoints/best_v2_r50.pth",
+    "tag": "v2_r50"
+  },
+  "best_pd_val_acc": 0.7039,
+  "best_epoch": 18,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 1.6281,
+      "pd_val_acc": 0.6009
+    },
+    {
+      "epoch": 2,
+      "loss": 1.2224,
+      "pd_val_acc": 0.6417
+    },
+    {
+      "epoch": 3,
+      "loss": 1.1024,
+      "pd_val_acc": 0.6463
+    },
+    {
+      "epoch": 4,
+      "loss": 1.0342,
+      "pd_val_acc": 0.6358
+    },
+    {
+      "epoch": 5,
+      "loss": 0.9771,
+      "pd_val_acc": 0.651
+    },
+    {
+      "epoch": 6,
+      "loss": 0.9325,
+      "pd_val_acc": 0.6562
+    },
+    {
+      "epoch": 7,
+      "loss": 0.9005,
+      "pd_val_acc": 0.6632
+    },
+    {
+      "epoch": 8,
+      "loss": 0.8644,
+      "pd_val_acc": 0.6672
+    },
+    {
+      "epoch": 9,
+      "loss": 0.8418,
+      "pd_val_acc": 0.6632
+    },
+    {
+      "epoch": 10,
+      "loss": 0.8096,
+      "pd_val_acc": 0.6597
+    },
+    {
+      "epoch": 11,
+      "loss": 0.7949,
+      "pd_val_acc": 0.6841
+    },
+    {
+      "epoch": 12,
+      "loss": 0.7783,
+      "pd_val_acc": 0.68
+    },
+    {
+      "epoch": 13,
+      "loss": 0.759,
+      "pd_val_acc": 0.6719
+    },
+    {
+      "epoch": 14,
+      "loss": 0.7446,
+      "pd_val_acc": 0.6894
+    },
+    {
+      "epoch": 15,
+      "loss": 0.7356,
+      "pd_val_acc": 0.6905
+    },
+    {
+      "epoch": 16,
+      "loss": 0.7291,
+      "pd_val_acc": 0.6969
+    },
+    {
+      "epoch": 17,
+      "loss": 0.7226,
+      "pd_val_acc": 0.6998
+    },
+    {
+      "epoch": 18,
+      "loss": 0.7137,
+      "pd_val_acc": 0.7039
+    },
+    {
+      "epoch": 19,
+      "loss": 0.7118,
+      "pd_val_acc": 0.6998
+    },
+    {
+      "epoch": 20,
+      "loss": 0.7097,
+      "pd_val_acc": 0.6998
+    }
+  ],
+  "per_class_val_at_best": {
+    "Apple___Apple_scab": 0.4839,
+    "Apple___Cedar_apple_rust": 0.7297,
+    "Apple___healthy": 0.875,
+    "Blueberry___healthy": 0.7183,
+    "Cherry___healthy": 0.4,
+    "Corn___Cercospora_leaf_spot Gray_leaf_spot": 0.6471,
+    "Corn___Common_rust": 0.9524,
+    "Corn___Northern_Leaf_Blight": 0.8442,
+    "Grape___Black_rot": 0.68,
+    "Grape___healthy": 0.8868,
+    "Peach___healthy": 0.8166,
+    "Pepper,_bell___Bacterial_spot": 0.6,
+    "Pepper,_bell___healthy": 0.6667,
+    "Potato___Early_blight": 0.4921,
+    "Potato___Late_blight": 0.5283,
+    "Raspberry___healthy": 0.9118,
+    "Soybean___healthy": 0.8871,
+    "Squash___Powdery_mildew": 0.9211,
+    "Strawberry___healthy": 0.8889,
+    "Tomato___Bacterial_spot": 0.1528,
+    "Tomato___Early_blight": 0.2609,
+    "Tomato___Late_blight": 0.6333,
+    "Tomato___Leaf_Mold": 0.4,
+    "Tomato___Septoria_leaf_spot": 0.6613,
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus": 0.8365,
+    "Tomato___Tomato_mosaic_virus": 0.5,
+    "Tomato___healthy": 0.5811
+  }
+}

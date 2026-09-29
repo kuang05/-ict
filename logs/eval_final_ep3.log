@@ -1,0 +1,60 @@
+[eval] ckpt=model/checkpoints/snap_ep3.pth
+[eval] backbone=resnet50 n_classes=27 device=cuda tta=True
+[eval] 缺失键=40 多余键=48
+[eval][警告] 有 40 个键未加载, 指标可能失真: ['layer3.0.conv1.weight', 'layer3.0.bn1.weight', 'layer3.0.bn1.bias']
+{
+  "ckpt": "model/checkpoints/snap_ep3.pth",
+  "backbone": "resnet50",
+  "n_classes": 27,
+  "protocol": "PlantDoc 原图级留出 test(452 裁叶)",
+  "mask27": false,
+  "tta": true,
+  "n_test": 452,
+  "top1": 0.0442,
+  "top3": 0.0996,
+  "crop_acc": 0.0442,
+  "disease_acc_given_crop_correct": 1.0
+}
+
+--- 每类(升序) ---
+  Apple___Apple_scab                               0.0%  n=13
+  Apple___Cedar_apple_rust                         0.0%  n=11
+  Apple___healthy                                  0.0%  n=10
+  Blueberry___healthy                              0.0%  n=22
+  Cherry___healthy                                 0.0%  n=19
+  Corn___Cercospora_leaf_spot Gray_leaf_spot       0.0%  n=4
+  Corn___Common_rust                               0.0%  n=10
+  Corn___Northern_Leaf_Blight                      0.0%  n=12
+  Grape___Black_rot                                0.0%  n=8
+  Grape___healthy                                  0.0%  n=15
+  Peach___healthy                                  0.0%  n=10
+  Pepper,_bell___Bacterial_spot                    0.0%  n=15
+  Pepper,_bell___healthy                           0.0%  n=11
+  Potato___Early_blight                            0.0%  n=17
+  Potato___Late_blight                             0.0%  n=10
+  Raspberry___healthy                              0.0%  n=17
+  Squash___Powdery_mildew                          0.0%  n=6
+  Strawberry___healthy                             0.0%  n=30
+  Tomato___Bacterial_spot                          0.0%  n=14
+  Tomato___Early_blight                            0.0%  n=19
+  Tomato___Late_blight                             0.0%  n=14
+  Tomato___Leaf_Mold                               0.0%  n=16
+  Tomato___Septoria_leaf_spot                      0.0%  n=24
+  Tomato___Tomato_Yellow_Leaf_Curl_Virus           0.0%  n=42
+  Tomato___Tomato_mosaic_virus                     0.0%  n=36
+  Tomato___healthy                                 0.0%  n=27
+  Soybean___healthy                              100.0%  n=20
+
+--- 高频混淆 ---
+   40  Tomato___Tomato_Yellow_Leaf_Curl_Virus -> Soybean___healthy
+   35  Tomato___Tomato_mosaic_virus -> Soybean___healthy
+   30  Strawberry___healthy -> Soybean___healthy
+   26  Tomato___healthy -> Soybean___healthy
+   24  Tomato___Septoria_leaf_spot -> Soybean___healthy
+   21  Blueberry___healthy -> Soybean___healthy
+   19  Cherry___healthy -> Soybean___healthy
+   19  Tomato___Early_blight -> Soybean___healthy
+   17  Potato___Early_blight -> Soybean___healthy
+   17  Raspberry___healthy -> Soybean___healthy
+
+saved -> /root/he-yi/docs/plantdoc_eval_final_ep3.json
