@@ -1,0 +1,10 @@
+# 运行产物与缓存
+__pycache__/
+*.pyc
+*.sqlite3
+d1.json
+
+# 大文件: 数据集与训练产物不入库(云端用脚本现下)
+data/plantvillage/
+model/checkpoints/
+model/checkpoints_ms/

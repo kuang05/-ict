@@ -1,0 +1,11 @@
+# 运行演示(必装)
+fastapi>=0.110
+uvicorn>=0.27
+pillow>=10.0
+numpy>=1.26
+
+# 训练主模型(按需安装, 本地演示不需要)
+# mindspore==2.3.1        # 昇思主栈; 昇腾环境按华为官方whl安装
+# mindvision
+# torch>=2.1              # 对照路径
+# torchvision>=0.16

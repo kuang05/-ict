@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>禾医 · 农作物病虫害智能诊断平台</title>
+<style>
+  :root{--green:#1a7f37;--bg:#f4f8f4;--card:#fff;--line:#dce8dc;--ink:#1b2a1e;}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:"Microsoft YaHei",system-ui,sans-serif;}
+  body{background:var(--bg);color:var(--ink);}
+  header{background:linear-gradient(120deg,#14532d,#1a7f37);color:#fff;padding:20px 32px;
+         display:flex;align-items:center;gap:14px;}
+  header .logo{width:44px;height:44px;border-radius:12px;background:#fff;color:#14532d;
+               display:flex;align-items:center;justify-content:center;font-size:26px;}
+  header h1{font-size:22px;} header p{font-size:12px;opacity:.85;}
+  main{max-width:1080px;margin:24px auto;padding:0 16px;display:grid;
+       grid-template-columns:1.25fr 1fr;gap:18px;}
+  @media(max-width:860px){main{grid-template-columns:1fr;}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .card h2{font-size:15px;color:var(--green);margin-bottom:12px;}
+  .drop{border:2px dashed #9dc49d;border-radius:12px;padding:26px;text-align:center;
+        cursor:pointer;transition:.2s;background:#fbfdfb;}
+  .drop:hover,.drop.on{border-color:var(--green);background:#eef7ee;}
+  .drop img{max-width:100%;max-height:230px;border-radius:8px;margin-top:10px;}
+  .btn{background:var(--green);color:#fff;border:none;border-radius:8px;padding:10px 22px;
+       font-size:14px;cursor:pointer;margin-top:12px;}
+  .btn:disabled{background:#9db89d;cursor:not-allowed;}
+  .tag{display:inline-block;background:#e7f3e7;color:var(--green);border-radius:6px;
+       padding:2px 10px;font-size:12px;margin-right:6px;}
+  .diag .name{font-size:20px;font-weight:700;margin:6px 0 2px;}
+  .diag .conf{font-size:13px;color:#666;}
+  .bar{height:8px;background:#e5eee5;border-radius:4px;margin:8px 0;}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#34d399,#1a7f37);border-radius:4px;}
+  .report{white-space:pre-wrap;font-size:13px;line-height:1.75;background:#fbfdfb;
+          border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:10px;}
+  .escalation{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;border-radius:8px;
+              padding:10px;font-size:13px;margin-top:8px;}
+  .chat{display:flex;flex-direction:column;height:100%;}
+  .msgs{flex:1;min-height:220px;max-height:330px;overflow-y:auto;font-size:13px;line-height:1.6;}
+  .msg{margin:8px 0;padding:9px 12px;border-radius:10px;max-width:92%;white-space:pre-wrap;}
+  .msg.u{background:#e7f3e7;margin-left:auto;} .msg.a{background:#f1f4f1;}
+  .chat input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13px;}
+  .chat .row{display:flex;gap:8px;margin-top:8px;}
+  .recs{font-size:12px;color:#4b5f4b;}
+  .recs li{margin:6px 0 6px 18px;list-style:disc;}
+  footer{max-width:1080px;margin:18px auto 30px;padding:0 16px;font-size:12px;color:#6b7f6b;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">禾</div>
+  <div><h1>禾医 · 农作物病虫害智能诊断平台</h1>
+  <p>基于华为云 ModelArts + 昇思MindSpore + MaaS大模型智能体 ｜ 第十一届华为ICT大赛创新赛 · 赛题1</p></div>
+</header>
+
+<main>
+  <section>
+    <div class="card">
+      <h2>① 上传叶片照片</h2>
+      <div class="drop" id="drop">点击选择或拖入叶片照片（JPG/PNG）<input type="file" id="file" accept="image/*" hidden>
+        <img id="preview" style="display:none"></div>
+      <button class="btn" id="go" disabled>开始智能诊断</button>
+      <span style="font-size:12px;color:#6b7f6b;margin-left:10px">演示图片在 data/demo_images/ 目录</span>
+    </div>
+    <div class="card diag" id="diagCard" style="display:none">
+      <h2>② 诊断结果</h2>
+      <div id="diagTop"></div>
+      <div id="diagOthers" style="font-size:12px;color:#6b7f6b"></div>
+      <div id="escalation"></div>
+      <h2 style="margin-top:14px">③ 禾医智能体报告</h2>
+      <div class="report" id="report"></div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:18px;">
+    <div class="card chat">
+      <h2>农事问答智能体 <span class="tag" id="llmTag">知识库模式</span></h2>
+      <div class="msgs" id="msgs"></div>
+      <div class="row"><input id="q" placeholder="例如：玉米叶子上锈色的粉是什么病？">
+      <button class="btn" id="ask" style="margin:0">问</button></div>
+    </div>
+    <div class="card">
+      <h2>最近诊断记录</h2>
+      <ul class="recs" id="recs"><li>暂无</li></ul>
+    </div>
+  </section>
+</main>
+<footer>禾医 HeYi v1.0 —— 数据集 PlantVillage（38类/5.4万张）｜ 事实来源为知识库，大模型仅做语言组织，防幻觉设计</footer>
+
+<script>
+const $=s=>document.querySelector(s);
+const drop=$('#drop'),file=$('#file'),go=$('#go');
+let picked=null;
+drop.onclick=()=>file.click();
+drop.ondragover=e=>{e.preventDefault();drop.classList.add('on')};
+drop.ondragleave=()=>drop.classList.remove('on');
+drop.ondrop=e=>{e.preventDefault();drop.classList.remove('on');if(e.dataTransfer.files[0])pick(e.dataTransfer.files[0])};
+file.onchange=()=>file.files[0]&&pick(file.files[0]);
+function pick(f){picked=f;const r=new FileReader();r.onload=()=>{const p=$('#preview');p.src=r.result;p.style.display='block'};r.readAsDataURL(f);go.disabled=false;}
+go.onclick=async()=>{
+  if(!picked)return;go.disabled=true;go.textContent='诊断中…';
+  const fd=new FormData();fd.append('file',picked);
+  try{
+    const r=await fetch('/api/diagnose',{method:'POST',body:fd});const d=await r.json();
+    $('#diagCard').style.display='block';
+    const t=d.top;
+    $('#diagTop').innerHTML=`<span class="tag">${t.class_name.split('___')[0]}</span>
+      <div class="name">${t.name_cn||t.class_name}</div>
+      <div class="conf">${t.class_name} ｜ 置信度 ${(t.confidence*100).toFixed(1)}% ｜ 引擎 ${d.engine} ｜ ${d.latency_ms}ms</div>
+      <div class="bar"><i style="width:${(t.confidence*100).toFixed(1)}%"></i></div>`;
+    $('#diagOthers').textContent='备选: '+d.predictions.slice(1).map(p=>`${p.class_name}(${(p.confidence*100).toFixed(1)}%)`).join('  ');
+    $('#escalation').innerHTML=d.plan.escalation?`<div class="escalation">${d.plan.escalation}</div>`:'';
+    $('#report').textContent=d.report;
+    loadRecs();
+  }catch(e){alert('诊断失败: '+e)}
+  go.disabled=false;go.textContent='开始智能诊断';
+};
+$('#ask').onclick=ask;$('#q').addEventListener('keydown',e=>e.key==='Enter'&&ask());
+function ask(){
+  const q=$('#q').value.trim();if(!q)return;$('#q').value='';
+  add('u',q);$('#ask').disabled=true;
+  fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})})
+    .then(r=>r.json()).then(d=>add('a',d.answer)).finally(()=>$('#ask').disabled=false);
+}
+function add(who,text){const m=document.createElement('div');m.className='msg '+who;m.textContent=text;
+  $('#msgs').appendChild(m);$('#msgs').scrollTop=1e9;}
+function loadRecs(){fetch('/api/records').then(r=>r.json()).then(rows=>{
+  $('#recs').innerHTML=rows.length?rows.map(r=>`<li>${r.ts} ｜ ${r.name_cn||r.class_name} ｜ ${(r.confidence*100).toFixed(1)}% ｜ ${r.engine}</li>`).join(''):'<li>暂无</li>';});}
+fetch('/api/health').then(r=>r.json()).then(d=>{
+  if(d.llm)$('#llmTag').textContent='大模型已连接';});
+loadRecs();
+</script>
+</body>
+</html>
