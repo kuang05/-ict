@@ -1,0 +1,17 @@
+{
+  "n_classes": 27,
+  "n_images": {
+    "train": 1874,
+    "val": 468,
+    "test": 236
+  },
+  "n_crops": {
+    "train": 6723,
+    "val": 1719,
+    "test": 452
+  }
+}
+[train] classes=27
+[val] classes=27
+[test] classes=27
+saved -> /root/data/pd_v2/class_map.json
