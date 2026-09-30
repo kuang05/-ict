@@ -1,0 +1,58 @@
+[eval-v5] ckpt=model/checkpoints/best_v3b.pth layout=nested backbone=resnet50 classes=27 split=test tta=True device=cuda
+{
+  "ckpt": "model/checkpoints/best_v3b.pth",
+  "backbone": "resnet50",
+  "layout": "nested",
+  "n_classes": 27,
+  "split": "test",
+  "tta": true,
+  "protocol": "PlantDoc 原图级留出, 27类输出空间",
+  "n_test": 452,
+  "top1": 0.6615,
+  "top3": 0.823,
+  "crop_acc": 0.8717,
+  "disease_acc_given_crop_correct": 0.7589
+}
+
+--- 每类(升序) ---
+  Corn___Cercospora_leaf_spot Gray_leaf_spot      25.0%  n=4
+  Tomato___Leaf_Mold                              25.0%  n=16
+  Potato___Late_blight                            30.0%  n=10
+  Tomato___Bacterial_spot                         35.7%  n=14
+  Tomato___healthy                                40.7%  n=27
+  Potato___Early_blight                           41.2%  n=17
+  Corn___Northern_Leaf_Blight                     41.7%  n=12
+  Tomato___Tomato_mosaic_virus                    41.7%  n=36
+  Tomato___Late_blight                            50.0%  n=14
+  Cherry___healthy                                52.6%  n=19
+  Tomato___Early_blight                           57.9%  n=19
+  Tomato___Septoria_leaf_spot                     58.3%  n=24
+  Apple___healthy                                 70.0%  n=10
+  Tomato___Tomato_Yellow_Leaf_Curl_Virus          73.8%  n=42
+  Soybean___healthy                               75.0%  n=20
+  Apple___Apple_scab                              76.9%  n=13
+  Corn___Common_rust                              80.0%  n=10
+  Apple___Cedar_apple_rust                        81.8%  n=11
+  Grape___healthy                                 86.7%  n=15
+  Pepper,_bell___Bacterial_spot                   86.7%  n=15
+  Grape___Black_rot                               87.5%  n=8
+  Peach___healthy                                 90.0%  n=10
+  Pepper,_bell___healthy                          90.9%  n=11
+  Blueberry___healthy                             95.5%  n=22
+  Raspberry___healthy                            100.0%  n=17
+  Squash___Powdery_mildew                        100.0%  n=6
+  Strawberry___healthy                           100.0%  n=30
+
+--- 高频混淆 ---
+    9  Tomato___Tomato_mosaic_virus -> Tomato___Tomato_Yellow_Leaf_Curl_Virus
+    7  Corn___Northern_Leaf_Blight -> Corn___Cercospora_leaf_spot Gray_leaf_spot
+    7  Potato___Early_blight -> Potato___Late_blight
+    7  Tomato___Septoria_leaf_spot -> Tomato___Early_blight
+    6  Tomato___Tomato_mosaic_virus -> Tomato___Leaf_Mold
+    5  Cherry___healthy -> Peach___healthy
+    5  Soybean___healthy -> Raspberry___healthy
+    5  Tomato___Bacterial_spot -> Tomato___Septoria_leaf_spot
+    5  Tomato___Leaf_Mold -> Tomato___Tomato_mosaic_virus
+    5  Tomato___Tomato_Yellow_Leaf_Curl_Virus -> Tomato___healthy
+
+saved -> docs/eval_test_best_v3b.json

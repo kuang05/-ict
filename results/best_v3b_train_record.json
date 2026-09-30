@@ -1,0 +1,223 @@
+{
+  "tag": "v3b_r50",
+  "args": {
+    "pv_data": "/root/data/pv/Plant_leave_diseases_dataset_without_augmentation",
+    "pd_root": "/root/data/pd_v2",
+    "backbone": "resnet50",
+    "epochs": 40,
+    "batch": 64,
+    "lr": 0.0003,
+    "workers": 8,
+    "pv_per_class": 800,
+    "pd_repeat": 3,
+    "mix_p": 0.5,
+    "no_mixstyle": false,
+    "init": "",
+    "out": "model/checkpoints/best_v3b.pth",
+    "tag": "v3b_r50"
+  },
+  "best_pd_val_acc": 0.687,
+  "best_epoch": 36,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 1.5587,
+      "pd_val_acc": 0.6143
+    },
+    {
+      "epoch": 2,
+      "loss": 1.1729,
+      "pd_val_acc": 0.6405
+    },
+    {
+      "epoch": 3,
+      "loss": 1.0751,
+      "pd_val_acc": 0.6655
+    },
+    {
+      "epoch": 4,
+      "loss": 1.0108,
+      "pd_val_acc": 0.6597
+    },
+    {
+      "epoch": 5,
+      "loss": 0.9693,
+      "pd_val_acc": 0.6498
+    },
+    {
+      "epoch": 6,
+      "loss": 0.9305,
+      "pd_val_acc": 0.6457
+    },
+    {
+      "epoch": 7,
+      "loss": 0.8992,
+      "pd_val_acc": 0.6626
+    },
+    {
+      "epoch": 8,
+      "loss": 0.882,
+      "pd_val_acc": 0.6475
+    },
+    {
+      "epoch": 9,
+      "loss": 0.8542,
+      "pd_val_acc": 0.6667
+    },
+    {
+      "epoch": 10,
+      "loss": 0.8432,
+      "pd_val_acc": 0.6614
+    },
+    {
+      "epoch": 11,
+      "loss": 0.8282,
+      "pd_val_acc": 0.6678
+    },
+    {
+      "epoch": 12,
+      "loss": 0.808,
+      "pd_val_acc": 0.6702
+    },
+    {
+      "epoch": 13,
+      "loss": 0.8004,
+      "pd_val_acc": 0.6527
+    },
+    {
+      "epoch": 14,
+      "loss": 0.7927,
+      "pd_val_acc": 0.6451
+    },
+    {
+      "epoch": 15,
+      "loss": 0.7822,
+      "pd_val_acc": 0.6661
+    },
+    {
+      "epoch": 16,
+      "loss": 0.7673,
+      "pd_val_acc": 0.6632
+    },
+    {
+      "epoch": 17,
+      "loss": 0.7579,
+      "pd_val_acc": 0.669
+    },
+    {
+      "epoch": 18,
+      "loss": 0.7524,
+      "pd_val_acc": 0.6632
+    },
+    {
+      "epoch": 19,
+      "loss": 0.7455,
+      "pd_val_acc": 0.6748
+    },
+    {
+      "epoch": 20,
+      "loss": 0.7375,
+      "pd_val_acc": 0.6789
+    },
+    {
+      "epoch": 21,
+      "loss": 0.7316,
+      "pd_val_acc": 0.6661
+    },
+    {
+      "epoch": 22,
+      "loss": 0.7255,
+      "pd_val_acc": 0.6736
+    },
+    {
+      "epoch": 23,
+      "loss": 0.7211,
+      "pd_val_acc": 0.6574
+    },
+    {
+      "epoch": 24,
+      "loss": 0.7147,
+      "pd_val_acc": 0.6579
+    },
+    {
+      "epoch": 25,
+      "loss": 0.7111,
+      "pd_val_acc": 0.6632
+    },
+    {
+      "epoch": 26,
+      "loss": 0.7065,
+      "pd_val_acc": 0.6783
+    },
+    {
+      "epoch": 27,
+      "loss": 0.7017,
+      "pd_val_acc": 0.6643
+    },
+    {
+      "epoch": 28,
+      "loss": 0.6995,
+      "pd_val_acc": 0.6777
+    },
+    {
+      "epoch": 29,
+      "loss": 0.6945,
+      "pd_val_acc": 0.6579
+    },
+    {
+      "epoch": 30,
+      "loss": 0.6939,
+      "pd_val_acc": 0.6626
+    },
+    {
+      "epoch": 31,
+      "loss": 0.6915,
+      "pd_val_acc": 0.6742
+    },
+    {
+      "epoch": 32,
+      "loss": 0.6867,
+      "pd_val_acc": 0.6725
+    },
+    {
+      "epoch": 33,
+      "loss": 0.6859,
+      "pd_val_acc": 0.6789
+    },
+    {
+      "epoch": 34,
+      "loss": 0.6854,
+      "pd_val_acc": 0.6864
+    },
+    {
+      "epoch": 35,
+      "loss": 0.6829,
+      "pd_val_acc": 0.68
+    },
+    {
+      "epoch": 36,
+      "loss": 0.6824,
+      "pd_val_acc": 0.687
+    },
+    {
+      "epoch": 37,
+      "loss": 0.6834,
+      "pd_val_acc": 0.6818
+    },
+    {
+      "epoch": 38,
+      "loss": 0.6814,
+      "pd_val_acc": 0.68
+    },
+    {
+      "epoch": 39,
+      "loss": 0.6799,
+      "pd_val_acc": 0.6841
+    },
+    {
+      "epoch": 40,
+      "loss": 0.6803,
+      "pd_val_acc": 0.6835
+    }
+  ]
+}
