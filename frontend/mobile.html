@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a7f4b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>禾医 · 拍照识病害</title>
+<link rel="manifest" href="/static/manifest.webmanifest">
+<style>
+:root{
+  --green:#1a7f4b; --green-dark:#14603a; --red:#d92c2c; --red-bg:#fff2f2;
+  --amber:#b7791f; --bg:#f4f6f5; --card:#fff; --text:#1c2321; --muted:#6b7a74;
+  --line:#e3e8e5;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+}
+header{
+  position:sticky;top:0;z-index:10;background:var(--green);color:#fff;
+  padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+header .logo{font-size:19px;font-weight:700;letter-spacing:.5px}
+header .sub{font-size:11px;opacity:.85;margin-top:1px}
+.wrap{padding:14px}
+.card{
+  background:var(--card);border-radius:14px;padding:16px;margin-bottom:12px;
+  box-shadow:0 1px 4px rgba(20,40,30,.06);
+}
+.card h3{margin:0 0 10px;font-size:15px;font-weight:600;display:flex;align-items:center;gap:6px}
+.card h3 .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.hint{font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* 拍照区 */
+#dropzone{
+  border:2px dashed #c4d2cb;border-radius:14px;padding:26px 16px;text-align:center;
+  background:#fbfdfc;transition:.2s;cursor:pointer;
+}
+#dropzone:active{background:#f0f7f3;border-color:var(--green)}
+#dropzone .big{font-size:40px;line-height:1}
+#dropzone .t{margin-top:10px;font-size:15px;font-weight:600;color:var(--green-dark)}
+#dropzone .s{margin-top:4px;font-size:12px;color:var(--muted)}
+#preview{width:100%;border-radius:12px;display:none;margin-bottom:12px}
+input[type=file]{display:none}
+
+/* 按钮 */
+.btn{
+  display:block;width:100%;border:0;border-radius:12px;padding:15px;
+  font-size:16px;font-weight:600;background:var(--green);color:#fff;
+  cursor:pointer;transition:.15s;
+}
+.btn:active{transform:scale(.985);background:var(--green-dark)}
+.btn[disabled]{opacity:.5}
+.btn.ghost{background:#eef4f1;color:var(--green-dark)}
+
+/* 结果 */
+#result{display:none}
+.diag-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.diag-name{font-size:21px;font-weight:700}
+.diag-en{font-size:12px;color:var(--muted);margin-top:2px}
+.conf{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.bar{height:6px;background:#eef2f0;border-radius:3px;margin-top:10px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--green);border-radius:3px}
+
+/* 高危升级卡 */
+.escalate{
+  background:var(--red-bg);border:1.5px solid #f3c9c9;border-left:5px solid var(--red);
+  border-radius:12px;padding:14px;margin-bottom:12px;
+}
+.escalate .hd{color:var(--red);font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px}
+.escalate .bd{font-size:13px;line-height:1.65;margin-top:8px;color:#7a2020}
+
+/* 四段式 */
+.sec{margin-bottom:14px}
+.sec .st{font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:6px}
+.sec .sb{font-size:13.5px;line-height:1.75;color:#2b3531;white-space:pre-wrap}
+.src{font-size:11px;color:#93a29b;margin-top:4px}
+
+.cand{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line)}
+.cand:last-child{border-bottom:0}
+.cand .p{color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* 反馈 */
+.fb{display:flex;gap:8px;margin-top:10px}
+.fb button{
+  flex:1;padding:11px;border-radius:10px;border:1.5px solid var(--line);
+  background:#fff;font-size:13.5px;font-weight:600;cursor:pointer;
+}
+.fb button.ok{border-color:#bfe3cd;color:var(--green-dark)}
+.fb button.no{border-color:#f0cfcf;color:var(--red)}
+
+/* 底部导航 */
+nav{
+  position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+  display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:20;
+}
+nav a{
+  flex:1;text-align:center;padding:10px 0 12px;font-size:11px;color:var(--muted);
+  text-decoration:none;cursor:pointer;
+}
+nav a.on{color:var(--green);font-weight:700}
+nav a .ic{display:block;font-size:19px;margin-bottom:2px}
+
+.rec{font-size:13px;padding:9px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.rec:last-child{border-bottom:0}
+.rec .t{color:var(--muted);font-size:11.5px}
+.badge{font-size:11px;padding:2px 7px;border-radius:20px;background:#eef4f1;color:var(--green-dark)}
+.toast{
+  position:fixed;left:50%;bottom:96px;transform:translateX(-50%);
+  background:rgba(28,35,33,.92);color:#fff;font-size:13px;padding:10px 18px;border-radius:22px;
+  opacity:0;transition:.25s;pointer-events:none;z-index:99;max-width:86vw;text-align:center;
+}
+.toast.show{opacity:1}
+.spin{
+  width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;
+  border-radius:50%;display:inline-block;vertical-align:-3px;margin-right:7px;
+  animation:sp .7s linear infinite;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">禾医 HeYi</div>
+    <div class="sub">拍照 → 诊断 → 处方 → 复诊</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 拍照页 -->
+  <div id="page-shot">
+    <div class="card">
+      <h3><span class="dot"></span>拍摄或选择叶片照片</h3>
+      <div id="dropzone">
+        <div class="big">📷</div>
+        <div class="t">点击拍照 / 选择照片</div>
+        <div class="s">对准病斑，距离 20–40cm，自然光下效果最好</div>
+      </div>
+      <input type="file" id="file" accept="image/*" capture="environment">
+      <img id="preview" alt="预览">
+      <button class="btn" id="go" style="display:none">开始诊断</button>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>拍照小贴士</h3>
+      <div class="hint">
+        · 保留真实背景，不要刻意虚化<br>
+        · 病斑特写 + 叶片全貌各拍一张更好<br>
+        · 叶背有时比叶面更明显（如霜霉病）<br>
+        · 避免正午强光直射和闪光灯反光
+      </div>
+    </div>
+  </div>
+
+  <!-- 结果页 -->
+  <div id="page-result">
+    <div id="escalate-box"></div>
+    <div class="card">
+      <div class="diag-head">
+        <div>
+          <div class="diag-name" id="r-name">—</div>
+          <div class="diag-en" id="r-en"></div>
+        </div>
+        <div class="conf" id="r-conf"></div>
+      </div>
+      <div class="bar"><i id="r-bar" style="width:0"></i></div>
+      <div class="src" id="r-engine"></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>处置处方</h3>
+      <div class="sec"><div class="sb" id="r-treatment">—</div>
+        <div class="src">来源：data/knowledge/diseases.json（可溯源，非模型生成）</div></div>
+      <div class="sec"><div class="st">农事预防</div><div class="sb" id="r-prevent">—</div></div>
+      <div class="sec"><div class="st">不干预的风险</div><div class="sb" id="r-risk">—</div></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>其他可能（备选）</h3>
+      <div id="r-cands"></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="dot"></span>这次诊断准不准？</h3>
+      <div class="hint">你的反馈会进入系统，驱动下一轮策略改进（可进化闭环）。</div>
+      <div class="fb">
+        <button class="ok" onclick="feedback(true)">✓ 判断正确</button>
+        <button class="no" onclick="feedback(false)">✗ 判断有误</button>
+      </div>
+    </div>
+
+    <button class="btn ghost" onclick="reset()">再拍一张</button>
+  </div>
+
+  <!-- 记录页 -->
+  <div id="page-hist" style="display:none">
+    <div class="card">
+      <h3><span class="dot"></span>诊断档案</h3>
+      <div id="hist-list"><div class="hint">加载中…</div></div>
+    </div>
+  </div>
+
+</div>
+
+<nav>
+  <a id="nav-shot" class="on" onclick="tab('shot')"><span class="ic">📷</span>诊断</a>
+  <a id="nav-hist" onclick="tab('hist')"><span class="ic">🗂</span>档案</a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = location.origin;
+let last = null;   // 最近一次诊断结果，用于反馈
+
+function $(id){ return document.getElementById(id); }
+function toast(msg, ms=2200){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), ms);
+}
+
+/* ---------------- 拍照 ---------------- */
+$('dropzone').onclick = () => $('file').click();
+$('file').onchange = e => {
+  const f = e.target.files && e.target.files[0];
+  if(!f) return;
+  const url = URL.createObjectURL(f);
+  const p = $('preview');
+  p.src = url; p.style.display = 'block';
+  $('go').style.display = 'block';
+  $('dropzone').style.display = 'none';
+  window._file = f;
+};
+
+/* ---------------- 诊断 ---------------- */
+$('go').onclick = async () => {
+  const f = window._file;
+  if(!f) return toast('请先拍照或选择照片');
+  const btn = $('go');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>诊断中…';
+  try{
+    const fd = new FormData();
+    fd.append('file', f, f.name || 'leaf.jpg');
+    const r = await fetch(API + '/api/diagnose', { method:'POST', body: fd });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    render(d);
+    tab('result');
+  }catch(err){
+    toast('诊断失败：' + err.message + '（请确认后端已启动）');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = '开始诊断';
+  }
+};
+
+function render(d){
+  last = d;
+  const top = d.top || {};
+  const plan = d.plan || {};
+  const diag = plan.diagnosis || {};
+  const esc  = plan.escalation || {};
+
+  $('r-name').textContent = diag.name_cn || top.name_cn || top.class_name || '—';
+  $('r-en').textContent   = top.class_name || '';
+  const conf = Math.round((top.confidence || 0) * 100);
+  $('r-conf').textContent = '置信度 ' + conf + '%';
+  $('r-bar').style.width  = conf + '%';
+  $('r-engine').textContent = '推理引擎：' + (d.engine || '—')
+      + (d.latency_ms ? ' · 耗时 ' + d.latency_ms + ' ms' : '')
+      + (d.llm_used ? ' · 大模型参与' : ' · 事实全部来自知识库');
+
+  // 高危升级卡
+  const box = $('escalate-box');
+  if(esc.escalate){
+    box.innerHTML =
+      '<div class="escalate"><div class="hd">⚠ 高危病害 · 请立即处理</div>' +
+      '<div class="bd">' + (esc.action || '建议联系当地植保站并隔离病株') +
+      '<br><span style="opacity:.85">' + (esc.reason || 'AI 仅做筛查，确诊须人工复核') + '</span></div></div>';
+  }else{
+    box.innerHTML = '';
+  }
+
+  $('r-treatment').textContent = diag.treatment || plan.treatment || '知识库暂无该病害处方，已拒绝生成（防幻觉）';
+  $('r-prevent').textContent   = diag.prevention || plan.prevention || '—';
+  $('r-risk').textContent      = diag.risk_if_untreated || plan.risk_if_untreated || '—';
+
+  const cs = (d.predictions || []).slice(0, 4);
+  $('r-cands').innerHTML = cs.map((c,i) =>
+    '<div class="cand"><span>' + (i+1) + '. ' + (c.name_cn || c.class_name) + '</span>' +
+    '<span class="p">' + Math.round((c.confidence||0)*100) + '%</span></div>'
+  ).join('') || '<div class="hint">无</div>';
+}
+
+/* ---------------- 反馈（可进化闭环） ---------------- */
+async function feedback(ok){
+  if(!last) return;
+  const top = last.top || {};
+  const rec = {
+    record_id: String(Date.now()),
+    predicted: top.class_name,
+    actual: ok ? top.class_name : '(用户标记为误判)',
+    correct: !!ok,
+    note: '来自手机端'
+  };
+  try{
+    // 优先走 MCP 工具的 HTTP 通道；后端未提供则本地留存
+    const r = await fetch(API + '/api/feedback', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(rec)
+    });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    toast(ok ? '已记录：判断正确 ✓' : '已记录：感谢反馈，将用于策略改进');
+  }catch(e){
+    toast('反馈已缓存（后端未启用反馈接口）');
+    try{
+      const q = JSON.parse(localStorage.getItem('heyi_fb') || '[]');
+      q.push(rec); localStorage.setItem('heyi_fb', JSON.stringify(q));
+    }catch(_){}
+  }
+}
+
+/* ---------------- 记录 ---------------- */
+async function loadHist(){
+  const box = $('hist-list');
+  try{
+    const r = await fetch(API + '/api/records?limit=30');
+    const rows = await r.json();
+    box.innerHTML = rows.length ? rows.map(x =>
+      '<div class="rec"><div><div>' + (x.name_cn || x.class_name) + '</div>' +
+      '<div class="t">' + x.ts + '</div></div>' +
+      '<div class="badge">' + Math.round((x.confidence||0)*100) + '%</div></div>'
+    ).join('') : '<div class="hint">暂无记录</div>';
+  }catch(e){
+    box.innerHTML = '<div class="hint">无法读取档案（后端未启动）</div>';
+  }
+}
+
+/* ---------------- 切页 ---------------- */
+function tab(name){
+  ['shot','result','hist'].forEach(p => $('page-' + p).style.display = 'none');
+  $('page-' + name).style.display = 'block';
+  $('nav-shot').className = (name === 'hist') ? '' : 'on';
+  $('nav-hist').className = (name === 'hist') ? 'on' : '';
+  if(name === 'hist') loadHist();
+  window.scrollTo(0,0);
+}
+
+function reset(){
+  $('preview').style.display = 'none';
+  $('preview').src = '';
+  $('go').style.display = 'none';
+  $('dropzone').style.display = 'block';
+  $('file').value = '';
+  window._file = null;
+  tab('shot');
+}
+
+/* 注册 Service Worker（PWA，可添加到主屏幕 / 离线打开） */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "禾医 HeYi · 农作物病害智能诊断",
+  "short_name": "禾医",
+  "description": "拍照识病害，给出可溯源的防治处方与高危升级提醒",
+  "start_url": "/mobile",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f6f5",
+  "theme_color": "#1a7f4b",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/static/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

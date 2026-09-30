@@ -16,6 +16,7 @@ import io, json, os, sqlite3, sys, time
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,9 +38,17 @@ def db():
         engine TEXT, report TEXT)""")
     return conn
 
+# 静态资源（手机端 PWA 的 manifest / service worker / 图标）
+app.mount("/static", StaticFiles(directory=os.path.join(ROOT, "frontend")), name="static")
+
 @app.get("/")
 def index():
     return FileResponse(os.path.join(ROOT, "frontend", "index.html"))
+
+@app.get("/mobile")
+def mobile():
+    """手机端页面（PWA，可"添加到主屏幕"当 App 用）"""
+    return FileResponse(os.path.join(ROOT, "frontend", "mobile.html"))
 
 @app.get("/api/health")
 def health():
@@ -80,6 +89,31 @@ async def chat(payload: dict):
     if not q:
         raise HTTPException(400, "question 不能为空")
     return heyi_agent.chat(q)
+
+@app.post("/api/feedback")
+async def feedback(payload: dict):
+    """复诊/误诊反馈入库 —— "可进化"闭环的数据入口。
+
+    与 MCP 工具 submit_feedback 写入**同一份** data/feedback.jsonl，
+    保证手机端反馈与智能体反馈进入同一条进化通道：
+    反馈 → 策略评审 → 回归评测（model/eval_evolve.py）→ 版本化。
+    """
+    p = payload or {}
+    rec = {
+        "ts": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "record_id": p.get("record_id"),
+        "predicted": p.get("predicted"),
+        "actual": p.get("actual"),
+        "correct": p.get("correct"),
+        "note": p.get("note", ""),
+        "source": "mobile",
+    }
+    path = os.path.join(ROOT, "data", "feedback.jsonl")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    return {"saved": True, "record": rec,
+            "effect": "该样本将进入下一轮策略评审与回归评测"}
 
 @app.get("/api/records")
 def records(limit: int = 20):

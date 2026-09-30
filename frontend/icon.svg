@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <rect width="192" height="192" rx="42" fill="#1a7f4b"/>
+  <!-- 叶片 -->
+  <path d="M96 152c0-38 0-64 0-88" stroke="#dff5e8" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <path d="M96 66c-26-4-46 10-50 34 22 10 42 4 50-34z" fill="#dff5e8"/>
+  <path d="M96 66c26-4 46 10 50 34-22 10-42 4-50-34z" fill="#b6ebc9"/>
+  <path d="M96 104c-22-3-38 9-42 28 18 9 35 4 42-28z" fill="#b6ebc9"/>
+  <path d="M96 104c22-3 38 9 42 28-18 9-35 4-42-28z" fill="#8fe0ac"/>
+  <!-- 病斑提示 -->
+  <circle cx="122" cy="88" r="7" fill="#d92c2c" opacity=".9"/>
+  <circle cx="72" cy="120" r="5" fill="#d92c2c" opacity=".75"/>
+</svg>
