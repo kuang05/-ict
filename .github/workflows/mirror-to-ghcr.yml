@@ -1,0 +1,51 @@
+name: 镜像中转 Docker Hub -> GHCR
+
+# 云服务器的出口代理是白名单制：Docker Hub 不可达，但 ghcr.io 可达。
+# 本 workflow 把需要的镜像从 Docker Hub 中转推送到本仓库的 GHCR，
+# 云服务器再从 ghcr.io 拉取——绕开白名单限制。
+#
+# 触发方式：修改本文件并 push（或 Actions 页面手动 Run workflow）
+# 拉取镜像前请确认包可见性：
+#   https://github.com/users/<owner>/packages/container/mirror/settings
+#   私有包需在服务器执行 docker login ghcr.io（用 GitHub PAT）
+
+on:
+  push:
+    paths:
+      - '.github/workflows/mirror-to-ghcr.yml'
+  workflow_dispatch:
+    inputs:
+      image:
+        description: '源镜像（Docker Hub）'
+        required: true
+        default: 'alpine:latest'
+      target_tag:
+        description: 'GHCR 目标 tag'
+        required: true
+        default: 'alpine'
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: 登录 GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 拉取源镜像
+        run: docker pull ${{ inputs.image || 'alpine:latest' }}
+
+      - name: 打标签并推送到 GHCR
+        run: |
+          SRC="${{ inputs.image || 'alpine:latest' }}"
+          TAG="${{ inputs.target_tag || 'alpine' }}"
+          DST="ghcr.io/${{ github.repository_owner }}/mirror:${TAG}"
+          docker tag "$SRC" "$DST"
+          docker push "$DST"
+          echo "已推送: $DST"
