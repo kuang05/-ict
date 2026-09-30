@@ -82,13 +82,17 @@ class Net(nn.Module):
     state_dict 与标准 torchvision 模型完全一致, 评测端可直接加载。
     """
 
-    def __init__(self, backbone="resnet50", n_cls=27, mix_p=0.5):
+    def __init__(self, backbone="resnet50", n_cls=27, mix_p=0.5, pretrained=True):
         super().__init__()
         builder = {"resnet18": models.resnet18,
                    "resnet50": models.resnet50}.get(backbone)
         if builder is None:
             raise ValueError(backbone)
-        self.backbone = builder(weights=None)
+        # 跨域小数据场景, ImageNet 预训练是必需的; 关掉会退化到近乎随机(实测 ep1 仅 12.7%)
+        weights = {"resnet18": models.ResNet18_Weights.IMAGENET1K_V1,
+                   "resnet50": models.ResNet50_Weights.IMAGENET1K_V2}[backbone] \
+            if pretrained else None
+        self.backbone = builder(weights=weights)
         feat = self.backbone.fc.in_features
         self.backbone.fc = nn.Linear(feat, n_cls)
         self.mix1 = MixStyle(mix_p)
