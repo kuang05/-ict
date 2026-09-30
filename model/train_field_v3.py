@@ -126,6 +126,9 @@ class Net(nn.Module):
 def tf_train():
     return transforms.Compose([
         transforms.RandomResizedCrop(224, scale=(0.5, 1.0)),
+        # 透视变换：公开对标工作(Jenpoer, 164 runs/13 策略)里**排名第 1** 的跨域增强。
+        # 模拟不同拍摄角度与距离，直接针对"实验室正面平拍 → 田间斜拍/仰拍"的域差。
+        transforms.RandomPerspective(distortion_scale=0.3, p=0.5),
         transforms.RandomHorizontalFlip(),
         transforms.RandomVerticalFlip(p=0.2),
         transforms.RandomApply([transforms.ColorJitter(0.5, 0.5, 0.5, 0.15)], p=0.8),
