@@ -44,6 +44,16 @@ from prepare_plantdoc import PD2PV
 CLASSES27 = sorted(set(PD2PV.values()))
 C2I27 = {c: i for i, c in enumerate(CLASSES27)}
 
+# 高危病害：漏诊代价远高于误诊（暴发性 3~7 天毁田 / 无特效药 / 需整株处理）。
+# 实测基线里这类样本的"被误判为健康"率高达 12.3%，必须用代价敏感加权压下去。
+HIGH_RISK = {
+    "Tomato___Late_blight",
+    "Potato___Late_blight",
+    "Tomato___Tomato_mosaic_virus",
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "Corn___Northern_Leaf_Blight",
+}
+
 
 class MixStyle(nn.Module):
     """随机混合 batch 内样本的通道均值/方差(风格统计量)。
@@ -190,6 +200,8 @@ def main():
     ap.add_argument("--pv-per-class", type=int, default=600)
     ap.add_argument("--pd-repeat", type=int, default=3)
     ap.add_argument("--mix-p", type=float, default=0.5)
+    ap.add_argument("--high-risk-weight", type=float, default=1.0,
+                    help="高危病害类别的额外损失权重(>1 启用代价敏感训练)")
     ap.add_argument("--no-mixstyle", action="store_true")
     ap.add_argument("--init", default="", help="可选: 本地权重初始化(不下载 ImageNet)")
     ap.add_argument("--out", default="/root/he-yi/model/checkpoints/best_v3.pth")
@@ -216,6 +228,12 @@ def main():
     cnt = Counter(y for _, y in train_items)
     w = np.array([1.0 / np.sqrt(max(cnt[i], 1)) for i in range(len(CLASSES27))])
     w = w / w.mean()
+    # 代价敏感：对高危病害额外加权，让模型"宁可误报，不可漏诊"
+    if args.high_risk_weight > 1.0:
+        hr = [i for i, c in enumerate(CLASSES27) if c in HIGH_RISK]
+        w[hr] *= args.high_risk_weight
+        w = w / w.mean()
+        print(f"[v3] 高危加权 x{args.high_risk_weight}: {[CLASSES27[i] for i in hr]}")
     class_w = torch.tensor(w, dtype=torch.float32, device=device)
 
     train_loader = DataLoader(ListDS(train_items, tf_train()), batch_size=args.batch,
