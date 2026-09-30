@@ -1,0 +1,15 @@
+{
+  "ts": "2026-09-30 05:36:11",
+  "ckpt": "best_v3b.pth",
+  "note": "v3b: 40ep+800PV/类",
+  "split": "test",
+  "n": 452,
+  "tta": true,
+  "top1": 0.6615,
+  "top3": 0.823,
+  "crop_acc": 0.8717,
+  "high_risk_n": 114,
+  "high_risk_recall@1": 0.5351,
+  "high_risk_recall@3": 0.7719,
+  "high_risk_missed_as_healthy": 0.1228
+}

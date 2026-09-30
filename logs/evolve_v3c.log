@@ -1,0 +1,22 @@
+{
+  "ts": "2026-09-30 05:38:24",
+  "ckpt": "best_v3c_bs128.pth",
+  "note": "v3c: bs128",
+  "split": "test",
+  "n": 452,
+  "tta": true,
+  "top1": 0.6482,
+  "top3": 0.8496,
+  "crop_acc": 0.8385,
+  "high_risk_n": 114,
+  "high_risk_recall@1": 0.5789,
+  "high_risk_recall@3": 0.7719,
+  "high_risk_missed_as_healthy": 0.0702
+}
+
+=== 进化曲线（按时间）===
+版本                              top1    top3      作物     高危R@1       高危判健康
+v3b: 40ep+800PV/类              0.661   0.823   0.872    0.5351      0.1228
+v3c: bs128                     0.648   0.850   0.839    0.5789      0.0702
+
+当前最优: v3b: 40ep+800PV/类 (top1=0.6615)
