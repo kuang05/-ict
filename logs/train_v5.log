@@ -1,0 +1,102 @@
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+[v3] 外部田间数据并入: +16731 项累计
+[v3] device=npu backbone=resnet50 mixstyle=True
+[v3] PV27=16731 PD-train=6723x3 PD-val=1719 total=36900
+/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch/amp/autocast_mode.py:297: UserWarning: In npu autocast, but the target dtype is not supported. Disabling autocast.
+ npu Autocast only supports dtypes of torch.float16 currently.
+  warnings.warn(error_message)
+-\|/-\|/-\/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+|/-[v3] epoch1 loss=1.5940 PDval=0.6248 (224s)
+\[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6248)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch2 loss=1.1984 PDval=0.6009 (102s)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch3 loss=1.0823 PDval=0.6498 (100s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6498)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch4 loss=1.0223 PDval=0.6568 (100s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6568)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch5 loss=0.9658 PDval=0.6748 (100s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6748)
+[v3] epoch6 loss=0.9203 PDval=0.6469 (99s)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch7 loss=0.8906 PDval=0.6725 (100s)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch8 loss=0.8558 PDval=0.6800 (100s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6800)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch9 loss=0.8245 PDval=0.6812 (106s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6812)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch10 loss=0.8072 PDval=0.6853 (100s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6853)
+[v3] epoch11 loss=0.7870 PDval=0.6603 (100s)
+[v3] epoch12 loss=0.7723 PDval=0.6754 (101s)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch13 loss=0.7542 PDval=0.6818 (103s)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch14 loss=0.7423 PDval=0.6731 (105s)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch15 loss=0.7306 PDval=0.6934 (151s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6934)
+[v3] epoch16 loss=0.7225 PDval=0.6981 (139s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6981)
+[v3] epoch17 loss=0.7161 PDval=0.6946 (162s)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch18 loss=0.7109 PDval=0.6987 (162s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6987)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch19 loss=0.7065 PDval=0.6992 (168s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v5.pth (PDval=0.6992)
+/home/ma-user/he-yi/model/train_field_v3.py:158: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y

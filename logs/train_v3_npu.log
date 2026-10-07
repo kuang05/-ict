@@ -1,0 +1,72 @@
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+[v3] device=npu backbone=resnet50 mixstyle=True
+[v3] PV27=14771 PD-train=6723x3 PD-val=1719 total=34940
+-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-[v3] epoch1 loss=1.6403 PDval=0.6259 (623s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6259)
+[v3] epoch2 loss=1.2225 PDval=0.6353 (106s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6353)
+[v3] epoch3 loss=1.1038 PDval=0.6440 (108s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6440)
+[v3] epoch4 loss=1.0288 PDval=0.6638 (107s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6638)
+[v3] epoch5 loss=0.9872 PDval=0.6422 (107s)
+[v3] epoch6 loss=0.9325 PDval=0.6539 (107s)
+[v3] epoch7 loss=0.8959 PDval=0.6696 (106s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6696)
+[v3] epoch8 loss=0.8645 PDval=0.6696 (109s)
+[v3] epoch9 loss=0.8399 PDval=0.6777 (108s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6777)
+[v3] epoch10 loss=0.8113 PDval=0.6707 (107s)
+[v3] epoch11 loss=0.7900 PDval=0.6841 (107s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6841)
+[v3] epoch12 loss=0.7771 PDval=0.6882 (107s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6882)
+[v3] epoch13 loss=0.7626 PDval=0.6952 (108s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6952)
+[v3] epoch14 loss=0.7485 PDval=0.6981 (110s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6981)
+[v3] epoch15 loss=0.7387 PDval=0.6969 (108s)
+[v3] epoch16 loss=0.7288 PDval=0.6928 (107s)
+[v3] epoch17 loss=0.7226 PDval=0.6923 (107s)
+[v3] epoch18 loss=0.7167 PDval=0.6998 (107s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.6998)
+[v3] epoch19 loss=0.7139 PDval=0.7016 (107s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.7016)
+[v3] epoch20 loss=0.7113 PDval=0.7080 (111s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v3.pth (PDval=0.7080)
+[v3] done. best_PD_val=0.7080 @ep20 -> /home/ma-user/he-yi/model/checkpoints/best_v3_train_record.json

@@ -1,0 +1,75 @@
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+[v3] device=npu backbone=resnet50 mixstyle=True
+[v3] PV27=32419 PD-train=6723x3 PD-val=1719 total=52588
+/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch/amp/autocast_mode.py:297: UserWarning: In npu autocast, but the target dtype is not supported. Disabling autocast.
+ npu Autocast only supports dtypes of torch.float16 currently.
+  warnings.warn(error_message)
+-\|/-\|/-\|[v3] epoch1 loss=1.4163 PDval=0.6050 (249s)
+/[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6050)
+[v3] epoch2 loss=1.1177 PDval=0.6248 (146s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6248)
+[v3] epoch3 loss=1.0305 PDval=0.6364 (145s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6364)
+[v3] epoch4 loss=0.9885 PDval=0.6399 (145s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6399)
+[v3] epoch5 loss=0.9448 PDval=0.6376 (149s)
+[v3] epoch6 loss=0.9091 PDval=0.6457 (145s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6457)
+[v3] epoch7 loss=0.8777 PDval=0.6579 (145s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6579)
+[v3] epoch8 loss=0.8563 PDval=0.6591 (146s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6591)
+[v3] epoch9 loss=0.8294 PDval=0.6608 (151s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6608)
+[v3] epoch10 loss=0.8140 PDval=0.6486 (146s)
+[v3] epoch11 loss=0.7997 PDval=0.6591 (145s)
+[v3] epoch12 loss=0.7824 PDval=0.6707 (147s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6707)
+[v3] epoch13 loss=0.7659 PDval=0.6754 (148s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6754)
+[v3] epoch14 loss=0.7579 PDval=0.6702 (145s)
+[v3] epoch15 loss=0.7491 PDval=0.6795 (146s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6795)
+[v3] epoch16 loss=0.7425 PDval=0.6882 (147s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6882)
+[v3] epoch17 loss=0.7372 PDval=0.6841 (146s)
+[v3] epoch18 loss=0.7313 PDval=0.6876 (149s)
+[v3] epoch19 loss=0.7306 PDval=0.6975 (146s)
+[v3] saved model/checkpoints/best_v4a.pth (PDval=0.6975)
+[v3] epoch20 loss=0.7295 PDval=0.6923 (145s)
+[v3] done. best_PD_val=0.6975 @ep19 -> model/checkpoints/best_v4a_train_record.json

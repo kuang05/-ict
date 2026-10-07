@@ -1,0 +1,124 @@
+{
+  "tag": "v3",
+  "args": {
+    "pv_data": "/home/ma-user/data/pv/Plant_leave_diseases_dataset_without_augmentation",
+    "pd_root": "/home/ma-user/data/pd_v2",
+    "backbone": "resnet50",
+    "epochs": 20,
+    "batch": 64,
+    "lr": 0.0003,
+    "workers": 32,
+    "pv_per_class": 600,
+    "pd_repeat": 3,
+    "mix_p": 0.5,
+    "high_risk_weight": 1.0,
+    "no_mixstyle": false,
+    "init": "",
+    "out": "/home/ma-user/he-yi/model/checkpoints/best_v3.pth",
+    "tag": "v3"
+  },
+  "best_pd_val_acc": 0.708,
+  "best_epoch": 20,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 1.6403,
+      "pd_val_acc": 0.6259
+    },
+    {
+      "epoch": 2,
+      "loss": 1.2225,
+      "pd_val_acc": 0.6353
+    },
+    {
+      "epoch": 3,
+      "loss": 1.1038,
+      "pd_val_acc": 0.644
+    },
+    {
+      "epoch": 4,
+      "loss": 1.0288,
+      "pd_val_acc": 0.6638
+    },
+    {
+      "epoch": 5,
+      "loss": 0.9872,
+      "pd_val_acc": 0.6422
+    },
+    {
+      "epoch": 6,
+      "loss": 0.9325,
+      "pd_val_acc": 0.6539
+    },
+    {
+      "epoch": 7,
+      "loss": 0.8959,
+      "pd_val_acc": 0.6696
+    },
+    {
+      "epoch": 8,
+      "loss": 0.8645,
+      "pd_val_acc": 0.6696
+    },
+    {
+      "epoch": 9,
+      "loss": 0.8399,
+      "pd_val_acc": 0.6777
+    },
+    {
+      "epoch": 10,
+      "loss": 0.8113,
+      "pd_val_acc": 0.6707
+    },
+    {
+      "epoch": 11,
+      "loss": 0.79,
+      "pd_val_acc": 0.6841
+    },
+    {
+      "epoch": 12,
+      "loss": 0.7771,
+      "pd_val_acc": 0.6882
+    },
+    {
+      "epoch": 13,
+      "loss": 0.7626,
+      "pd_val_acc": 0.6952
+    },
+    {
+      "epoch": 14,
+      "loss": 0.7485,
+      "pd_val_acc": 0.6981
+    },
+    {
+      "epoch": 15,
+      "loss": 0.7387,
+      "pd_val_acc": 0.6969
+    },
+    {
+      "epoch": 16,
+      "loss": 0.7288,
+      "pd_val_acc": 0.6928
+    },
+    {
+      "epoch": 17,
+      "loss": 0.7226,
+      "pd_val_acc": 0.6923
+    },
+    {
+      "epoch": 18,
+      "loss": 0.7167,
+      "pd_val_acc": 0.6998
+    },
+    {
+      "epoch": 19,
+      "loss": 0.7139,
+      "pd_val_acc": 0.7016
+    },
+    {
+      "epoch": 20,
+      "loss": 0.7113,
+      "pd_val_acc": 0.708
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+Downloading: "https://download.pytorch.org/models/resnet101-63fe2227.pth" to /home/ma-user/.cache/torch/hub/checkpoints/resnet101-63fe2227.pth
+[v3] 外部田间数据并入: +33318 项累计
+[v3] device=npu backbone=resnet101 mixstyle=True
+[v3] PV27=33318 PD-train=6723x3 PD-val=1719 total=53487
+  0%|          | 0.00/171M [00:00<?, ?B/s]  0%|          | 8.00k/171M [00:00<53:47, 55.4kB/s]  0%|          | 64.0k/171M [00:00<10:05, 295kB/s]   0%|          | 104k/171M [00:00<12:06, 246kB/s]   0%|          | 256k/171M [00:00<05:06, 582kB/s]  0%|          | 400k/171M [00:00<05:12, 572kB/s]  0%|          | 496k/171M [00:01<05:46, 515kB/s]  1%|          | 1.03M/171M [00:01<02:03, 1.43MB/s]  1%|          | 1.30M/171M [00:01<02:05, 1.41MB/s]  1%|          | 1.75M/171M [00:01<01:26, 2.04MB/s]  1%|▏         | 2.25M/171M [00:01<01:07, 2.63MB/s]  2%|▏         | 2.84M/171M [00:01<00:54, 3.24MB/s]  3%|▎         | 4.46M/171M [00:02<00:47, 3.67MB/s]  3%|▎         | 5.38M/171M [00:02<01:03, 2.73MB/s]  4%|▍         | 7.01M/171M [00:02<00:40, 4.28MB/s]  4%|▍         | 7.60M/171M [00:03<00:42, 4.00MB/s]  5%|▌         | 8.83M/171M [00:03<00:31, 5.31MB/s]  6%|▌         | 9.54M/171M [00:03<00:36, 4.66MB/s]  6%|▋         | 10.8M/171M [00:03<00:28, 5.89MB/s]  7%|▋         | 11.5M/171M [00:03<00:32, 5.08MB/s]  8%|▊         | 13.0M/171M [00:03<00:23, 6.93MB/s]  8%|▊         | 13.8M/171M [00:04<00:28, 5.68MB/s]  9%|▊         | 14.6M/171M [00:04<00:32, 4.98MB/s] 10%|▉         | 16.9M/171M [00:04<00:23, 6.76MB/s] 10%|█         | 17.7M/171M [00:04<00:24, 6.63MB/s] 11%|█         | 18.3M/171M [00:04<00:31, 5.14MB/s] 11%|█▏        | 19.6M/171M [00:05<00:32, 4.85MB/s] 12%|█▏        | 21.0M/171M [00:05<00:25, 6.08MB/s] 13%|█▎        | 21.6M/171M [00:05<00:29, 5.21MB/s] 13%|█▎        | 22.8M/171M [00:05<00:24, 6.41MB/s] 14%|█▍        | 23.7M/171M [00:05<00:28, 5.49MB/s] 15%|█▍        | 24.8M/171M [00:06<00:30, 5.09MB/s] 15%|█▌        | 26.3M/171M [00:06<00:23, 6.54MB/s] 16%|█▌        | 27.2M/171M [00:06<00:25, 5.82MB/s] 16%|█▋        | 27.9M/171M [00:06<00:28, 5.17MB/s] 18%|█▊        | 30.2M/171M [00:06<00:19, 7.37MB/s] 18%|█▊        | 31.2M/171M [00:07<00:22, 6.43MB/s] 20%|█▉        | 33.6M/171M [00:07<00:16, 8.94MB/s] 20%|██        | 34.6M/171M [00:07<00:19, 7.38MB/s] 21%|██        | 35.4M/171M [00:07<00:31, 4.53MB/s] 22%|██▏       | 37.2M/171M [00:08<00:22, 6.19MB/s] 22%|██▏       | 38.0M/171M [00:08<00:29, 4.70MB/s] 23%|██▎       | 39.3M/171M [00:08<00:24, 5.71MB/s] 24%|██▎       | 40.1M/171M [00:08<00:26, 5.19MB/s] 24%|██▍       | 40.7M/171M [00:08<00:28, 4.72MB/s] 24%|██▍       | 41.6M/171M [00:09<00:25, 5.35MB/s] 25%|██▌       | 43.4M/171M [00:09<00:17, 7.64MB/s] 26%|██▌       | 44.3M/171M [00:09<00:25, 5.10MB/s] 27%|██▋       | 45.9M/171M [00:09<00:20, 6.41MB/s] 27%|██▋       | 46.7M/171M [00:09<00:23, 5.48MB/s] 28%|██▊       | 48.4M/171M [00:10<00:17, 7.40MB/s] 29%|██▉       | 49.5M/171M [00:10<00:15, 8.14MB/s] 30%|███       | 51.2M/171M [00:10<00:12, 10.1MB/s] 31%|███       | 52.3M/171M [00:10<00:26, 4.74MB/s] 31%|███▏      | 53.7M/171M [00:11<00:24, 5.00MB/s] 32%|███▏      | 55.4M/171M [00:11<00:18, 6.70MB/s] 33%|███▎      | 56.4M/171M [00:11<00:18, 6.40MB/s] 34%|███▎      | 57.3M/171M [00:11<00:18, 6.32MB/s] 34%|███▍      | 58.1M/171M [00:11<00:23, 4.97MB/s] 34%|███▍      | 58.8M/171M [00:12<00:25, 4.67MB/s] 35%|███▌      | 60.0M/171M [00:12<00:19, 5.85MB/s] 36%|███▌      | 60.7M/171M [00:12<00:28, 4.10MB/s] 37%|███▋      | 62.6M/171M [00:12<00:19, 5.94MB/s] 38%|███▊      | 64.4M/171M [00:12<00:13, 8.12MB/s] 38%|███▊      | 65.5M/171M [00:13<00:19, 5.66MB/s] 39%|███▉      | 67.3M/171M [00:13<00:14, 7.41MB/s] 40%|████      | 68.4M/171M [00:13<00:25, 4.22MB/s] 41%|████      | 70.0M/171M [00:14<00:18, 5.67MB/s] 42%|████▏     | 71.0M/171M [00:14<00:17, 6.08MB/s] 42%|████▏     | 72.3M/171M [00:14<00:17, 5.85MB/s] 43%|████▎     | 73.1M/171M [00:14<00:18, 5.47MB/s] 44%|████▍     | 74.9M/171M [00:14<00:13, 7.45MB/s] 45%|████▍     | 76.1M/171M [00:14<00:11, 8.45MB/s] 45%|████▌     | 77.2M/171M [00:15<00:13, 7.21MB/s] 46%|████▌     | 78.2M/171M [00:15<00:15, 6.37MB/s] 47%|████▋     | 79.8M/171M [00:15<00:12, 7.82MB/s] 47%|████▋     | 80.7M/171M [00:15<00:12, 7.52MB/s] 48%|████▊     | 81.6M/171M [00:15<00:14, 6.23MB/s] 48%|████▊     | 82.4M/171M [00:16<00:17, 5.15MB/s] 49%|████▉     | 84.1M/171M [00:16<00:12, 7.01MB/s] 50%|████▉     | 85.2M/171M [00:16<00:11, 7.46MB/s] 50%|█████     | 86.0M/171M [00:16<00:13, 6.66MB/s] 51%|█████     | 86.7M/171M [00:16<00:16, 5.49MB/s] 51%|█████▏    | 87.8M/171M [00:16<00:14, 6.07MB/s] 52%|█████▏    | 88.4M/171M [00:17<00:15, 5.56MB/s] 53%|█████▎    | 90.4M/171M [00:17<00:13, 6.03MB/s] 53%|█████▎    | 91.0M/171M [00:17<00:16, 4.95MB/s] 54%|█████▍    | 92.9M/171M [00:17<00:11, 7.11MB/s] 55%|█████▍    | 93.7M/171M [00:18<00:16, 4.93MB/s] 56%|█████▋    | 96.0M/171M [00:18<00:10, 7.77MB/s] 57%|█████▋    | 97.1M/171M [00:18<00:16, 4.54MB/s] 57%|█████▋    | 98.0M/171M [00:19<00:20, 3.76MB/s] 58%|█████▊    | 98.9M/171M [00:19<00:18, 4.15MB/s] 59%|█████▊    | 99.8M/171M [00:19<00:15, 4.66MB/s] 59%|█████▉    | 101M/171M [00:19<00:13, 5.41MB/s]  60%|█████▉    | 102M/171M [00:19<00:15, 4.60MB/s] 61%|██████    | 104M/171M [00:20<00:13, 5.29MB/s] 61%|██████▏   | 105M/171M [00:20<00:14, 4.89MB/s] 62%|██████▏   | 106M/171M [00:20<00:15, 4.43MB/s] 63%|██████▎   | 107M/171M [00:20<00:14, 4.63MB/s] 63%|██████▎   | 107M/171M [00:21<00:16, 3.92MB/s] 63%|██████▎   | 108M/171M [00:21<00:16, 3.89MB/s] 64%|██████▎   | 109M/171M [00:21<00:14, 4.46MB/s] 65%|██████▍   | 110M/171M [00:21<00:08, 7.20MB/s] 65%|██████▌   | 111M/171M [00:22<00:18, 3.29MB/s] 66%|██████▌   | 112M/171M [00:22<00:17, 3.45MB/s] 66%|██████▋   | 113M/171M [00:22<00:14, 4.09MB/s] 67%|██████▋   | 114M/171M [00:22<00:13, 4.30MB/s] 67%|██████▋   | 115M/171M [00:22<00:11, 4.99MB/s] 68%|██████▊   | 116M/171M [00:23<00:10, 5.52MB/s] 68%|██████▊   | 116M/171M [00:23<00:10, 5.41MB/s] 69%|██████▉   | 118M/171M [00:23<00:08, 6.45MB/s] 70%|██████▉   | 119M/171M [00:23<00:11, 4.87MB/s] 71%|███████   | 120M/171M [00:23<00:07, 7.11MB/s] 71%|███████   | 121M/171M [00:24<00:08, 5.85MB/s] 72%|███████▏  | 122M/171M [00:24<00:07, 6.43MB/s] 72%|███████▏  | 123M/171M [00:24<00:07, 6.79MB/s] 73%|███████▎  | 124M/171M [00:24<00:08, 6.01MB/s] 73%|███████▎  | 125M/171M [00:24<00:07, 6.76MB/s] 74%|███████▎  | 126M/171M [00:24<00:07, 6.57MB/s] 74%|███████▍  | 126M/171M [00:24<00:07, 6.50MB/s] 74%|███████▍  | 127M/171M [00:24<00:08, 5.31MB/s] 75%|███████▌  | 128M/171M [00:25<00:06, 6.78MB/s] 76%|███████▌  | 129M/171M [00:25<00:08, 5.38MB/s] 77%|███████▋  | 130M/171M [00:25<00:06, 6.42MB/s] 77%|███████▋  | 131M/171M [00:25<00:07, 5.53MB/s] 78%|███████▊  | 133M/171M [00:25<00:04, 8.17MB/s] 79%|███████▊  | 134M/171M [00:26<00:08, 4.68MB/s] 80%|███████▉  | 136M/171M [00:26<00:05, 6.70MB/s] 80%|████████  | 137M/171M [00:26<00:07, 4.74MB/s] 81%|████████  | 138M/171M [00:26<00:05, 5.72MB/s] 82%|████████▏ | 139M/171M [00:27<00:08, 3.88MB/s] 83%|████████▎ | 141M/171M [00:27<00:05, 6.03MB/s] 83%|████████▎ | 142M/171M [00:27<00:04, 6.85MB/s] 84%|████████▍ | 143M/171M [00:27<00:04, 6.12MB/s] 85%|████████▍ | 144M/171M [00:28<00:04, 6.63MB/s] 85%|████████▌ | 145M/171M [00:28<00:04, 5.52MB/s] 86%|████████▌ | 146M/171M [00:28<00:03, 6.45MB/s] 86%|████████▌ | 147M/171M [00:28<00:05, 4.36MB/s] 87%|████████▋ | 149M/171M [00:28<00:04, 5.71MB/s] 88%|████████▊ | 150M/171M [00:29<00:03, 5.83MB/s] 88%|████████▊ | 151M/171M [00:29<00:03, 6.60MB/s] 89%|████████▉ | 153M/171M [00:29<00:03, 6.26MB/s] 90%|█████████ | 154M/171M [00:29<00:02, 7.18MB/s] 91%|█████████ | 155M/171M [00:29<00:02, 6.19MB/s] 91%|█████████▏| 156M/171M [00:30<00:02, 5.23MB/s] 92%|█████████▏| 157M/171M [00:30<00:02, 4.98MB/s] 93%|█████████▎| 159M/171M [00:30<00:02, 5.70MB/s] 93%|█████████▎| 159M/171M [00:30<00:02, 5.06MB/s] 94%|█████████▍| 160M/171M [00:30<00:01, 6.13MB/s] 95%|█████████▍| 162M/171M [00:31<00:01, 6.95MB/s] 95%|█████████▌| 162M/171M [00:31<00:01, 6.73MB/s] 96%|█████████▌| 163M/171M [00:31<00:01, 4.38MB/s] 96%|█████████▋| 164M/171M [00:31<00:01, 5.52MB/s] 97%|█████████▋| 165M/171M [00:32<00:01, 4.00MB/s] 97%|█████████▋| 166M/171M [00:32<00:02, 2.53MB/s] 98%|█████████▊| 167M/171M [00:32<00:01, 3.23MB/s] 99%|█████████▊| 168M/171M [00:33<00:00, 4.48MB/s] 99%|█████████▉| 169M/171M [00:33<00:00, 5.19MB/s]100%|█████████▉| 170M/171M [00:33<00:00, 3.88MB/s]100%|██████████| 171M/171M [00:33<00:00, 5.33MB/s]
+/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch/amp/autocast_mode.py:297: UserWarning: In npu autocast, but the target dtype is not supported. Disabling autocast.
+ npu Autocast only supports dtypes of torch.float16 currently.
+  warnings.warn(error_message)
+-\|/-\|/-/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+\|[v3] epoch1 loss=1.5906 PDval=0.5346 (333s)
+/[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.5346)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch2 loss=1.3062 PDval=0.5730 (226s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.5730)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch3 loss=1.2161 PDval=0.5928 (226s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.5928)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch4 loss=1.1543 PDval=0.6015 (228s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6015)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch5 loss=1.0957 PDval=0.6312 (224s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6312)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch6 loss=1.0526 PDval=0.6417 (227s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6417)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch7 loss=1.0144 PDval=0.6289 (229s)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch8 loss=0.9793 PDval=0.6411 (226s)
+[v3] epoch9 loss=0.9452 PDval=0.6579 (227s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6579)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch10 loss=0.9169 PDval=0.6667 (226s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6667)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch11 loss=0.8859 PDval=0.6736 (227s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6736)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch12 loss=0.8618 PDval=0.6876 (227s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6876)
+[v3] epoch13 loss=0.8420 PDval=0.6754 (225s)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch14 loss=0.8240 PDval=0.6766 (224s)
+[v3] epoch15 loss=0.8106 PDval=0.6684 (231s)
+[v3] epoch16 loss=0.7966 PDval=0.6888 (226s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.6888)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch17 loss=0.7881 PDval=0.7051 (225s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.7051)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch18 loss=0.7824 PDval=0.7027 (233s)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch19 loss=0.7774 PDval=0.6987 (226s)
+/home/ma-user/he-yi/model/train_field_v3.py:176: ResourceWarning: unclosed file <_io.BufferedReader name='/home/ma-user/data/pv_extra/Corn___Common_rust/Corn_Common_Rust (1277).jpg'>
+  return self.tf(Image.open(p).convert("RGB")), y
+[v3] epoch20 loss=0.7769 PDval=0.7086 (227s)
+[v3] saved /home/ma-user/he-yi/model/checkpoints/best_v11.pth (PDval=0.7086)
+[v3] done. best_PD_val=0.7086 @ep20 -> /home/ma-user/he-yi/model/checkpoints/best_v11_train_record.json

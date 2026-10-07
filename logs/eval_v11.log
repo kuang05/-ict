@@ -1,0 +1,97 @@
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+/usr/local/Ascend/ascend-toolkit/latest/python/site-packages/tbe/dsl/unify_schedule/extract_image_patches_without_cbuf_schedule.py:317: SyntaxWarning: "is not" with a literal. Did you mean "!="?
+  if _ is not 1:
+[eval-v3] ckpt=model/checkpoints/best_v11.pth backbone=resnet101 classes=27 device=npu tta=True
+-\|/-\/home/ma-user/he-yi/model/eval_v3.py:194: ResourceWarning: unclosed file <_io.TextIOWrapper name='results/eval_test_best_v11.json' mode='w' encoding='utf-8'>
+  json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+{
+  "ckpt": "model/checkpoints/best_v11.pth",
+  "backbone": "resnet101",
+  "n_classes": 27,
+  "protocol": "PlantDoc 原图级留出 test(452 裁叶), 27类输出空间",
+  "tta": true,
+  "n_test": 452,
+  "top1": 0.6792,
+  "top3": 0.8518,
+  "crop_acc": 0.8673,
+  "disease_acc_given_crop_correct": 0.7832
+}
+
+--- 每类 ---
+  Potato___Early_blight                         23.5%  n=17
+  Tomato___Leaf_Mold                            25.0%  n=16
+  Tomato___Bacterial_spot                       28.6%  n=14
+  Potato___Late_blight                          30.0%  n=10
+  Tomato___Tomato_mosaic_virus                  44.4%  n=36
+  Corn___Cercospora_leaf_spot Gray_leaf_spot    50.0%  n=4
+  Corn___Northern_Leaf_Blight                   50.0%  n=12
+  Tomato___Late_blight                          50.0%  n=14
+  Tomato___healthy                              55.6%  n=27
+  Cherry___healthy                              57.9%  n=19
+  Tomato___Early_blight                         57.9%  n=19
+  Soybean___healthy                             65.0%  n=20
+  Tomato___Septoria_leaf_spot                   66.7%  n=24
+  Apple___Cedar_apple_rust                      72.7%  n=11
+  Tomato___Tomato_Yellow_Leaf_Curl_Virus        73.8%  n=42
+  Apple___healthy                               80.0%  n=10
+  Pepper,_bell___healthy                        81.8%  n=11
+  Apple___Apple_scab                            84.6%  n=13
+  Peach___healthy                               90.0%  n=10
+  Grape___healthy                               93.3%  n=15
+  Pepper,_bell___Bacterial_spot                 93.3%  n=15
+  Blueberry___healthy                           95.5%  n=22
+  Strawberry___healthy                          96.7%  n=30
+  Corn___Common_rust                           100.0%  n=10
+  Grape___Black_rot                            100.0%  n=8
+  Raspberry___healthy                          100.0%  n=17
+  Squash___Powdery_mildew                      100.0%  n=6
+
+--- 高频混淆 ---
+   10  Potato___Early_blight -> Potato___Late_blight
+    7  Tomato___Tomato_mosaic_virus -> Tomato___Leaf_Mold
+    6  Corn___Northern_Leaf_Blight -> Corn___Cercospora_leaf_spot Gray_leaf_spot
+    6  Tomato___Leaf_Mold -> Tomato___Tomato_mosaic_virus
+    5  Soybean___healthy -> Raspberry___healthy
+    5  Tomato___Bacterial_spot -> Tomato___Septoria_leaf_spot
+    5  Tomato___Tomato_Yellow_Leaf_Curl_Virus -> Tomato___Tomato_mosaic_virus
+    5  Tomato___Tomato_Yellow_Leaf_Curl_Virus -> Tomato___healthy
+    5  Tomato___Tomato_mosaic_virus -> Tomato___Tomato_Yellow_Leaf_Curl_Virus
+    4  Cherry___healthy -> Peach___healthy
+    4  Tomato___Bacterial_spot -> Pepper,_bell___Bacterial_spot
+    4  Tomato___Leaf_Mold -> Tomato___Early_blight
+
+saved -> results/eval_test_best_v11.json
+V11_EVAL_DONE

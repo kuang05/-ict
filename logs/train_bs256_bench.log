@@ -1,0 +1,31 @@
+Traceback (most recent call last):
+  File "/home/ma-user/he-yi/model/train_field_v3.py", line 342, in <module>
+    main()
+  File "/home/ma-user/he-yi/model/train_field_v3.py", line 233, in main
+    import torch_npu  # noqa: F401
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/__init__.py", line 40, in <module>
+    import torch_npu.dynamo
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/dynamo/__init__.py", line 30, in <module>
+    _global_backend = _get_default_backend()
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/dynamo/__init__.py", line 24, in _get_default_backend
+    from . import torchair
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/dynamo/torchair/__init__.py", line 2, in <module>
+    from torchair.npu_fx_compiler import get_compiler
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/dynamo/torchair/__init__.py", line 2, in <module>
+    from torchair.npu_fx_compiler import get_compiler
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/dynamo/torchair/npu_fx_compiler.py", line 16, in <module>
+    from torchair.ge_concrete_graph.ge_graph import is_sym
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/dynamo/torchair/ge_concrete_graph/ge_graph.py", line 15, in <module>
+    from torchair.ge_concrete_graph.ge_ir_pb2 import GraphDef, OpDef, AttrDef, TensorDescriptor
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/torch_npu/dynamo/torchair/ge_concrete_graph/ge_ir_pb2.py", line 33, in <module>
+    _descriptor.EnumValueDescriptor(
+  File "/home/ma-user/anaconda3/envs/PyTorch-2.1.0/lib/python3.9/site-packages/google/protobuf/descriptor.py", line 1038, in __new__
+    _message.Message._CheckCalledFromGeneratedFile()
+TypeError: Descriptors cannot be created directly.
+If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc >= 3.19.0.
+If you cannot immediately regenerate your protos, some other possible workarounds are:
+ 1. Downgrade the protobuf package to 3.20.x or lower.
+ 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).
+
+More information: https://developers.google.com/protocol-buffers/docs/news/2022-05-06#python-updates
+BS256_BENCH_DONE

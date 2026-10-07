@@ -42,11 +42,20 @@ def unwrap_mixstyle_keys(sd):
             if k.startswith(name + ".0."):
                 k = name + "." + k[len(name + ".0."):]
                 break
+        if k.startswith("backbone."):
+            k = k[len("backbone."):]
         out[k] = v
     return out
 
 
 def build_net(backbone, n_cls):
+    if backbone.startswith("timm_"):
+        import timm
+        return timm.create_model(backbone[5:], pretrained=False, num_classes=n_cls)
+    if backbone == "resnet101":
+        net = models.resnet101(weights=None)
+        net.fc = nn.Linear(net.fc.in_features, n_cls)
+        return net
     if backbone == "resnet50":
         net = models.resnet50(weights=None)
         net.fc = nn.Linear(net.fc.in_features, n_cls)
@@ -114,12 +123,20 @@ def main():
     ap.add_argument("--backbone", default="resnet50")
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--tta", type=int, default=1)
+    ap.add_argument("--sizes", default="224,288", help="TTA尺度列表")
     ap.add_argument("--out", default="")
     args = ap.parse_args()
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    try:
+        import torch_npu  # noqa: F401
+    except ImportError:
+        pass
+    device = "npu" if getattr(torch, "npu", None) is not None and torch.npu.is_available() else ("cuda" if torch.cuda.is_available() else "cpu")
     ck = torch.load(args.ckpt, map_location="cpu", weights_only=False)
     classes = ck.get("classes", CLASSES27)
+    # 关键: GT 索引空间必须与 checkpoint 的类表对齐(30类扩展后 CLASSES27 不再是权威)
+    C2I.clear()
+    C2I.update({c: i for i, c in enumerate(classes)})
     n_cls = len(classes)
     net = build_net(args.backbone, n_cls)
     sd = unwrap_mixstyle_keys(ck["model"])
@@ -132,7 +149,7 @@ def main():
     if unexpected:
         print(f"[eval-v3] 多余键 {len(unexpected)}: {unexpected[:3]}")
 
-    sizes = [224, 288] if args.tta else [224]
+    sizes = [int(s) for s in args.sizes.split(",")] if args.tta else [int(args.sizes.split(",")[0])]
     flips = [False, True] if args.tta else [False]
     probs, gts = run(net, args.data, device, sizes, flips, args.batch)
     pred = probs.argmax(1)

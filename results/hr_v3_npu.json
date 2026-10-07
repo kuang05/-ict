@@ -1,0 +1,18 @@
+{
+  "ckpt": "best_v3.pth",
+  "n_test": 452,
+  "tta": true,
+  "top1": 0.6593,
+  "high_risk_n": 114,
+  "high_risk_classes": [
+    "Corn___Northern_Leaf_Blight",
+    "Potato___Late_blight",
+    "Tomato___Late_blight",
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+    "Tomato___Tomato_mosaic_virus"
+  ],
+  "high_risk_recall@1": 0.6228,
+  "high_risk_recall@3": 0.7895,
+  "high_risk_missed_as_healthy": 0.0702,
+  "high_risk_pred_nonhr_disease": 0.1404
+}
