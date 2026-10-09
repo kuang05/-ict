@@ -1,0 +1,151 @@
+{
+  "tag": "hier",
+  "args": {
+    "pv_data": "/home/ma-user/data/pv/Plant_leave_diseases_dataset_without_augmentation",
+    "pd_root": "/home/ma-user/data/pd_v3",
+    "backbone": "resnet101",
+    "epochs": 20,
+    "batch": 64,
+    "lr": 0.0003,
+    "workers": 48,
+    "pv_per_class": 600,
+    "extra_data": "/home/ma-user/data/pv_extra",
+    "img_size": 224,
+    "crop_weight": 0.3,
+    "mixup": 0.0,
+    "mixup_p": 0.5,
+    "ema_decay": 0.0,
+    "pd_repeat": 3,
+    "mix_p": 0.5,
+    "high_risk_weight": 1.0,
+    "no_mixstyle": false,
+    "amp": false,
+    "init": "",
+    "out": "model/checkpoints/best_hier.pth",
+    "tag": "hier"
+  },
+  "best_pd_val_dis_acc": 0.7106,
+  "best_epoch": 18,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 1.8283,
+      "pd_val_dis_acc": 0.5053,
+      "pd_val_crop_acc": 0.6534
+    },
+    {
+      "epoch": 2,
+      "loss": 1.4828,
+      "pd_val_dis_acc": 0.6254,
+      "pd_val_crop_acc": 0.7684
+    },
+    {
+      "epoch": 3,
+      "loss": 1.3747,
+      "pd_val_dis_acc": 0.5928,
+      "pd_val_crop_acc": 0.7532
+    },
+    {
+      "epoch": 4,
+      "loss": 1.3024,
+      "pd_val_dis_acc": 0.6097,
+      "pd_val_crop_acc": 0.7672
+    },
+    {
+      "epoch": 5,
+      "loss": 1.2464,
+      "pd_val_dis_acc": 0.5852,
+      "pd_val_crop_acc": 0.752
+    },
+    {
+      "epoch": 6,
+      "loss": 1.1994,
+      "pd_val_dis_acc": 0.5753,
+      "pd_val_crop_acc": 0.7421
+    },
+    {
+      "epoch": 7,
+      "loss": 1.1461,
+      "pd_val_dis_acc": 0.6383,
+      "pd_val_crop_acc": 0.79
+    },
+    {
+      "epoch": 8,
+      "loss": 1.1051,
+      "pd_val_dis_acc": 0.6377,
+      "pd_val_crop_acc": 0.7713
+    },
+    {
+      "epoch": 9,
+      "loss": 1.0643,
+      "pd_val_dis_acc": 0.6231,
+      "pd_val_crop_acc": 0.7935
+    },
+    {
+      "epoch": 10,
+      "loss": 1.0309,
+      "pd_val_dis_acc": 0.6459,
+      "pd_val_crop_acc": 0.7958
+    },
+    {
+      "epoch": 11,
+      "loss": 1.0029,
+      "pd_val_dis_acc": 0.6534,
+      "pd_val_crop_acc": 0.7929
+    },
+    {
+      "epoch": 12,
+      "loss": 0.9706,
+      "pd_val_dis_acc": 0.6744,
+      "pd_val_crop_acc": 0.8197
+    },
+    {
+      "epoch": 13,
+      "loss": 0.9517,
+      "pd_val_dis_acc": 0.6832,
+      "pd_val_crop_acc": 0.8221
+    },
+    {
+      "epoch": 14,
+      "loss": 0.9267,
+      "pd_val_dis_acc": 0.7001,
+      "pd_val_crop_acc": 0.8291
+    },
+    {
+      "epoch": 15,
+      "loss": 0.9133,
+      "pd_val_dis_acc": 0.6832,
+      "pd_val_crop_acc": 0.8203
+    },
+    {
+      "epoch": 16,
+      "loss": 0.8988,
+      "pd_val_dis_acc": 0.6995,
+      "pd_val_crop_acc": 0.8431
+    },
+    {
+      "epoch": 17,
+      "loss": 0.8885,
+      "pd_val_dis_acc": 0.7036,
+      "pd_val_crop_acc": 0.8425
+    },
+    {
+      "epoch": 18,
+      "loss": 0.8825,
+      "pd_val_dis_acc": 0.7106,
+      "pd_val_crop_acc": 0.8442
+    },
+    {
+      "epoch": 19,
+      "loss": 0.8793,
+      "pd_val_dis_acc": 0.7054,
+      "pd_val_crop_acc": 0.8477
+    },
+    {
+      "epoch": 20,
+      "loss": 0.8764,
+      "pd_val_dis_acc": 0.7089,
+      "pd_val_crop_acc": 0.8477
+    }
+  ]
+}

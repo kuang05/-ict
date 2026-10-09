@@ -20,31 +20,22 @@ HIGH_RISK_CLASSES = frozenset({
 
 
 def load_net(path, device, backbone="resnet50"):
+    """加载**单头** resnet ckpt（键 backbone.*，含 backbone.fc 病害头）。
+
+    注：timm 现代骨干 / 层次化双头（head_dis + crop_head）请用 `eval_hier.py`，
+    它自带高危守门曲线；此处不做支持以免 strict 加载失败被误解为"指标正常"。
+    （2026-10-08 清理：原版有重复的 resnet101 分支与未定义的 n_cls，属死代码。）
+    """
     from torchvision import models
     import torch.nn as nn
     ck = torch.load(path, map_location="cpu", weights_only=False)
     classes = ck.get("classes", CLASSES27)
-    if backbone == "resnet101":
-        net = models.resnet101(weights=None)
-        net.fc = nn.Linear(net.fc.in_features, len(classes))
-        sd = {k[len("backbone."):]: v for k, v in ck["model"].items() if k.startswith("backbone.")}
-        net.load_state_dict(sd, strict=True)
-        return net.eval().to(device), classes
-    if backbone == "resnet50":
-        net = models.resnet50(weights=None)
-        net.fc = nn.Linear(net.fc.in_features, len(classes))
-    elif backbone.startswith("timm_"):
-        import timm
-        n_target = n_cls if "n_cls" in dir() else len(classes)
-        net = timm.create_model(backbone[5:], pretrained=False, num_classes=n_target)
-    elif backbone == "resnet101":
-        net = models.resnet101(weights=None)
-        net.fc = nn.Linear(net.fc.in_features, len(classes))
-    elif backbone == "convnext_tiny":
-        net = models.convnext_tiny(weights=None)
-        net.classifier[2] = nn.Linear(net.classifier[2].in_features, len(classes))
-    else:
-        raise ValueError(backbone)
+    builders = {"resnet18": models.resnet18, "resnet50": models.resnet50,
+                "resnet101": models.resnet101}
+    if backbone not in builders:
+        raise ValueError(f"compute_hr 仅支持 resnet18/50/101（timm/双头请用 eval_hier.py），收到 {backbone}")
+    net = builders[backbone](weights=None)
+    net.fc = nn.Linear(net.fc.in_features, len(classes))
     sd = {k[len("backbone."):]: v for k, v in ck["model"].items() if k.startswith("backbone.")}
     net.load_state_dict(sd, strict=True)
     return net.eval().to(device), classes
@@ -54,7 +45,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", required=True)
     ap.add_argument("--backbone", default="resnet50")
-    ap.add_argument("--data", default="/home/ma-user/data/pd_v2/test")
+    ap.add_argument("--data", default="/home/ma-user/data/pd_v3/test")
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--tta", type=int, default=1)
     ap.add_argument("--out", default="")
@@ -68,6 +59,9 @@ def main():
         ("cuda" if torch.cuda.is_available() else "cpu")
 
     net, classes = load_net(args.ckpt, device, args.backbone)
+    import eval_v3 as ev
+    ev.C2I.clear()
+    ev.C2I.update({c: i for i, c in enumerate(classes)})
     sizes = [224, 288] if args.tta else [224]
     flips = [False, True] if args.tta else [False]
     probs, gts = run(net, args.data, device, sizes, flips, args.batch)

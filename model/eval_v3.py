@@ -35,12 +35,19 @@ def crop_of(pv_class):
 
 
 def unwrap_mixstyle_keys(sd):
-    """把 "layerN.0.xxx" 还原为 "layerN.xxx"(MixStyle 无参数, 不进 state_dict)"""
+    """把 MixStyle 包装引入的**三层**键 "layerN.0.0.xxx" 还原为 "layerN.0.xxx"。
+
+    ⚠️ 2026-10-08 修复：原版用**两层**前缀 "layerN.0." 剥离，会把**本来就标准**的键
+    "layer1.0.conv1.weight" 误伤成 "layer1.conv1.weight"，导致 60 个键缺失
+    （权重汤 soup_*.pth 这类纯 backbone ckpt 必然中招）。
+    MixStyle 包装后的键一定是三层 "layerN.0.0."，两层的不该动。
+    """
     out = {}
     for k, v in sd.items():
-        for name in ("layer1", "layer2", "layer3"):
-            if k.startswith(name + ".0."):
-                k = name + "." + k[len(name + ".0."):]
+        for name in ("layer1", "layer2", "layer3", "layer4"):
+            pre = name + ".0.0."
+            if k.startswith(pre):
+                k = name + ".0." + k[len(pre):]
                 break
         if k.startswith("backbone."):
             k = k[len("backbone."):]
@@ -119,7 +126,7 @@ def run(net, ds_root, device, sizes, flips, batch=64, workers=8):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", required=True)
-    ap.add_argument("--data", default="/root/data/pd_v2/test")
+    ap.add_argument("--data", default="/home/ma-user/data/pd_v3/test")
     ap.add_argument("--backbone", default="resnet50")
     ap.add_argument("--batch", type=int, default=64)
     ap.add_argument("--tta", type=int, default=1)
@@ -141,13 +148,18 @@ def main():
     net = build_net(args.backbone, n_cls)
     sd = unwrap_mixstyle_keys(ck["model"])
     missing, unexpected = net.load_state_dict(sd, strict=False)
+    # 工程纪律(2026-10-08): 禁止静默降级。
+    # 缺失键 = 权重没真正加载上, 模型退化却照样"跑出指标"(v2 时代踩过: top1 4.2%)。
+    # 因此 missing 非空直接终止; unexpected 通常来自 crop_head 等辅助头, 可忽略。
+    if missing:
+        raise SystemExit(f"[eval-v3] 权重缺失 {len(missing)} 个键 (前5: {list(missing)[:5]}), "
+                         f"评测结果不可信 → 终止。请检查 --backbone 与 ckpt 是否匹配。")
+    if unexpected:
+        print(f"[eval-v3] 提示: 多余键 {len(unexpected)} (前3: {list(unexpected)[:3]}) "
+              f"—— 通常来自 crop_head 等辅助头, 已忽略")
     net.eval().to(device)
     print(f"[eval-v3] ckpt={args.ckpt} backbone={args.backbone} classes={n_cls} "
           f"device={device} tta={bool(args.tta)}")
-    if missing:
-        print(f"[eval-v3] 缺失键 {len(missing)}: {missing[:3]}")
-    if unexpected:
-        print(f"[eval-v3] 多余键 {len(unexpected)}: {unexpected[:3]}")
 
     sizes = [int(s) for s in args.sizes.split(",")] if args.tta else [int(args.sizes.split(",")[0])]
     flips = [False, True] if args.tta else [False]

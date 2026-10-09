@@ -35,14 +35,26 @@ from train_field_v3 import Net, CLASSES27  # noqa: E402
 def build(ckpt, backbone):
     ck = torch.load(ckpt, map_location="cpu", weights_only=False)
     classes = ck.get("classes", CLASSES27)
-    keys = ck["model"].keys()
-    if any(k.startswith("backbone.") for k in keys):
-        net = Net(backbone, len(classes), mix_p=0.0)
+    is_hier = str(ck.get("arch", "")).startswith("v4_hierarchical")
+    # 层次化双头 ckpt：病害头可能落在 backbone.fc(resnet) 或 head_dis(timm)，统一用 NetV4
+    if is_hier:
+        from train_hier import NetV4, CROPS
+        crops = ck.get("crops", CROPS)
+        net = NetV4(backbone, len(classes), len(crops), mix_p=0.0, pretrained=False)
+    elif any(k.startswith("backbone.") for k in ck["model"].keys()):
+        # pretrained=False: 权重马上被 load_state_dict 覆盖, 无需下载 ImageNet
+        net = Net(backbone, len(classes), mix_p=0.0, pretrained=False)
     else:
         from torchvision import models
         net = getattr(models, backbone)(weights=None)
         net.fc = torch.nn.Linear(net.fc.in_features, len(classes))
-    missing, unexpected = net.load_state_dict(ck["model"], strict=False)
+    if is_hier:
+        # NetV4 自身含 crop_head，必须全量加载（ONNX 只导出病害头，crop_head 不参与前向）
+        sd = dict(ck["model"])
+    else:
+        # 单头 Net：ckpt 里可能残留 crop_head.*，过滤掉
+        sd = {k: v for k, v in ck["model"].items() if not k.startswith("crop_head.")}
+    missing, unexpected = net.load_state_dict(sd, strict=False)
     if missing or unexpected:
         raise SystemExit(f"权重加载失败 missing={len(missing)} unexpected={len(unexpected)}")
     net.eval()

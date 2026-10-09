@@ -195,9 +195,16 @@ def scan_dir(root, per_class=None, seed=42, c2i=None):
 
 import contextlib as _ctxlib
 
-def amp_ctx(device):
+def amp_ctx(device, use_amp=True):
+    """AMP 上下文。
+
+    ⚠️ 2026-10-08 修复：910B 的 npu autocast 只支持 float16，传 bfloat16 会被
+    torch 静默禁用（warning 后继续 FP32 训练，白丢约一倍速度）。显式用 float16。
+    """
+    if not use_amp:
+        return _ctxlib.nullcontext()
     if device == "npu":
-        return torch.npu.amp.autocast(enabled=True, dtype=torch.bfloat16)
+        return torch.npu.amp.autocast(enabled=True, dtype=torch.float16)
     if device == "cuda":
         return torch.amp.autocast("cuda", enabled=True)
     return _ctxlib.nullcontext()
@@ -210,18 +217,20 @@ class _NoOpScaler:
     def update(self):
         pass
 
-def amp_scaler(device):
-    if device == "npu":
+def amp_scaler(device, use_amp=True):
+    if not use_amp:
         return _NoOpScaler()
+    if device == "npu":
+        return torch.npu.amp.GradScaler()
     return torch.amp.GradScaler("cuda", enabled=(device == "cuda"))
 @torch.no_grad()
-def evaluate(net, loader, device):
+def evaluate(net, loader, device, use_amp=False):
     was_training = net.training
     net.eval()
     correct = total = 0
     for x, y in loader:
         x, y = x.to(device), y.to(device)
-        with amp_ctx(device):
+        with amp_ctx(device, use_amp):
             p = net(x).argmax(1)
         correct += (p == y).sum().item()
         total += y.size(0)
@@ -300,21 +309,31 @@ def main():
         print(f"[v3] 高危加权 x{args.high_risk_weight}: {[CLASSES27[i] for i in hr]}")
     class_w = torch.tensor(w, dtype=torch.float32, device=device)
 
+    # prefetch_factor 仅在多进程时可用；workers=0（调试/自检）时必须为 None
+    pf = 6 if args.workers > 0 else None
     train_loader = DataLoader(ListDS(train_items, tf_train(args.img_size)), batch_size=args.batch,
                               shuffle=True, num_workers=args.workers,
                               pin_memory=True, drop_last=True,
-                              persistent_workers=(args.workers > 0), prefetch_factor=6)
+                              persistent_workers=(args.workers > 0), prefetch_factor=pf)
     val_loader = DataLoader(ListDS(pd_val, tf_val(args.img_size)), batch_size=args.batch,
                             num_workers=args.workers, pin_memory=True,
-                            persistent_workers=(args.workers > 0), prefetch_factor=6)
+                            persistent_workers=(args.workers > 0), prefetch_factor=pf)
 
     net = Net(args.backbone, len(classes), 0.0 if args.no_mixstyle else args.mix_p)
 
     if args.init and os.path.exists(args.init):
         ck = torch.load(args.init, map_location="cpu", weights_only=False)
-        src = normalize_src(ck.get("model", ck))
+        raw = ck.get("model", ck)
+        # 剥离 Net 包装产生的 "backbone." 前缀, 使键与 net.backbone 对齐。
+        # (2026-10-08 修复: 原版直接 load 带前缀的键, 全部不匹配且 strict=False 静默忽略,
+        #  导致 --init 形同虚设 —— 微调会从 ImageNet 重新开始而非从给定权重继续。)
+        src = {k[len("backbone."):] if k.startswith("backbone.") else k: v
+               for k, v in raw.items()}
+        src = normalize_src(src)
         missing, unexpected = net.backbone.load_state_dict(src, strict=False)
         print(f"[v3] 从 {args.init} 初始化 backbone: missing={len(missing)} unexpected={len(unexpected)}")
+        if len(missing) > 0 or len(unexpected) > 0:
+            print(f"[v3] ⚠️ 初始化键未完全匹配, missing 前3={list(missing)[:3]} unexpected 前3={list(unexpected)[:3]}")
 
     net = net.to(device)
     ema = None

@@ -92,14 +92,45 @@ class _LightEngine:
 
 # ---------------------------------------------------------------- 深度模型
 class _TorchEngine:
+    """PyTorch 推理引擎。
+
+    支持两类产物（此前写死 resnet18 + strict 加载，导致只能跑旧的 38 类模型，
+    无法加载最优模型 v11(R101) —— 2026-10-09 修复）：
+      * v3 扁平模型：键为 `backbone.*`（可能带 MixStyle 三层包装）
+      * v4 层次化双头：另含 `crop_head.*` / `head_dis.*`，此处只取病害头，其余丢弃
+    类表一律从 ckpt 自带的 `classes` 读取，避免与静态 labels.json 不一致。
+    """
+
     def __init__(self, ckpt_path):
         import torch
         from torchvision import models, transforms as T
         ck = torch.load(ckpt_path, map_location="cpu", weights_only=False)
-        self.classes = ck["classes"]
-        net = models.resnet18(weights=None)
-        net.fc = torch.nn.Linear(net.fc.in_features, len(self.classes))
-        net.load_state_dict(ck["model"])
+        self.classes = ck.get("classes") or LABELS
+        bb = ck.get("backbone", "resnet18")
+        n = len(self.classes)
+        builder = {"resnet18": models.resnet18, "resnet50": models.resnet50,
+                   "resnet101": models.resnet101}.get(bb)
+        if builder is None:
+            raise ValueError(f"演示引擎暂不支持 backbone={bb}")
+        net = builder(weights=None)
+        net.fc = torch.nn.Linear(net.fc.in_features, n)
+        # 归一化键：丢辅助头 → 剥 MixStyle 三层包装 → 剥 backbone. 前缀
+        sd = {}
+        for k, v in ck["model"].items():
+            if k.startswith(("crop_head.", "head_dis.", "aux_head.")):
+                continue
+            for nm in ("layer1", "layer2", "layer3", "layer4"):
+                pre = nm + ".0.0."
+                if k.startswith(pre):
+                    k = nm + ".0." + k[len(pre):]
+                    break
+            if k.startswith("backbone."):
+                k = k[len("backbone."):]
+            sd[k] = v
+        missing, unexpected = net.load_state_dict(sd, strict=False)
+        real_missing = [k for k in missing if "mix" not in k]
+        if real_missing:
+            raise RuntimeError(f"权重缺失 {len(real_missing)} 键，拒绝静默降级: {real_missing[:3]}")
         net.eval()
         self.net = net
         self.tf = T.Compose([T.Resize(256), T.CenterCrop(224), T.ToTensor(),
@@ -152,21 +183,30 @@ def _preprocess(img: Image.Image):
 
 
 def get_engine():
-    """按优先级构建引擎并缓存。"""
+    """按**精度优先**构建引擎并缓存。
+
+    2026-10-09 修复：原实现只认 `checkpoints/best.pth`（9月30日的旧 38 类模型），
+    演示跑的不是最优模型。现改为候选列表，按精度从高到低尝试，并打印实际加载的引擎。
+    """
     global _ENGINE
     if _ENGINE is not None:
         return _ENGINE
-    pth = os.path.join(HERE, "checkpoints", "best.pth")
-    ck = os.path.join(HERE, "checkpoints_ms", "best.ckpt")
-    light_dir = os.path.join(HERE, "checkpoints_light")
-    for cand in [pth, ck]:
+    cands = [
+        ("checkpoints/best_v11.pth", "torch"),      # 最优单模型 67.92%（R101, 27类）
+        ("checkpoints/best.pth", "torch"),          # 通用最优
+        ("checkpoints_ms/best.ckpt", "mindspore"),  # 昇腾 MindSpore 训练产物
+    ]
+    for rel, kind in cands:
+        p = os.path.join(HERE, rel)
+        if not os.path.exists(p):
+            continue
         try:
-            if os.path.exists(pth) and cand == pth:
-                _ENGINE = _TorchEngine(pth); break
-            if os.path.exists(ck) and cand == ck:
-                _ENGINE = _MindSporeEngine(ck); break
+            _ENGINE = _TorchEngine(p) if kind == "torch" else _MindSporeEngine(p)
+            print(f"[HeYi] 引擎={kind} <- {rel} ({len(_ENGINE.classes)} 类)")
+            break
         except Exception as e:
-            print("[HeYi] deep engine load failed:", e)
+            print(f"[HeYi] {rel} 加载失败，尝试下一个: {e}")
+    light_dir = os.path.join(HERE, "checkpoints_light")
     if _ENGINE is None and os.path.isdir(light_dir):
         lm = os.path.join(light_dir, "light_model.json")
         if os.path.exists(lm):
