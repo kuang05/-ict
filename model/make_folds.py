@@ -49,8 +49,11 @@ def main():
         n_tr = n_va = 0
         for iid, items in src.items():
             part = "val" if iid in val_ids else "train"
-            for _, p in items:
-                rel = os.path.relpath(p, args.root)
+            for orig_part, p in items:
+                # ⚠️ 必须相对**原始 split 目录**取相对路径，否则会拼成 dst/train/train/...
+                # （2026-10-09 修复：原实现用 relpath(p, root) 保留了 "train/" 前缀，
+                #   导致 fold 目录下出现嵌套 train/train，scan_dir 找不到类别 → 训练集为空）
+                rel = os.path.relpath(p, os.path.join(args.root, orig_part))
                 d = os.path.join(dst, part, os.path.dirname(rel))
                 os.makedirs(d, exist_ok=True)
                 os.link(p, os.path.join(dst, part, rel))
