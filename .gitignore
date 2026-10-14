@@ -6,5 +6,11 @@ d1.json
 
 # 大文件: 数据集与训练产物不入库(云端用脚本现下)
 data/plantvillage/
-# model/checkpoints/  # 权重作为参赛材料入库
+
+# 模型权重不入库:
+# 1) best_v11.pth 等单文件 91~164MB, 超过 GitHub 单文件 100MB 硬限制, 推送必失败
+# 2) 权重是可再生产物(数据+脚本可从服务器复现), 不入库保持仓库轻量
+# 备份位置: 云服务器 ~/he-yi/model/checkpoints/ (含 fold0-4 等全部 ckpt)
+model/checkpoints/*.pth
+model/checkpoints/
 model/checkpoints_ms/
