@@ -64,6 +64,6 @@ $PY model/train_field_v3.py \
 echo "[6/6] 在 PlantDoc test(452 裁叶) 上评测 ..."
 $PY model/eval_v5.py --ckpt model/checkpoints/best_v3b.pth \
     --backbone resnet50 --split test --tta 1 \
-    --out /root/he-yi/docs/eval_test_best_v3b.json
+    --out results/eval_test_best_v3b.json
 
 echo "全部完成。"

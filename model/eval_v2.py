@@ -203,8 +203,7 @@ def main():
     for c in res["top_confusions"]:
         print(f"  {c['n']:3d}  {c['pair']}")
 
-    out = args.out or args.ckpt.replace(".pth", "_eval.json").replace(
-        "checkpoints", "evals") if False else (args.out or "/root/he-yi/docs/plantdoc_eval_v2.json")
+    out = args.out or "results/plantdoc_eval_v2.json"
     os.makedirs(os.path.dirname(out), exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:
         json.dump(res, f, ensure_ascii=False, indent=2)

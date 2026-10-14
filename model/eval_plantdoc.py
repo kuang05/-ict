@@ -15,7 +15,7 @@ from torchvision import models, transforms
 
 CKPT = "/root/he-yi/model/checkpoints/best.pth"
 PARQUET = "/root/data/plantdoc/test.parquet"
-OUT = "/root/he-yi/docs/plantdoc_eval_result.json"
+OUT = "results/plantdoc_eval_result.json"
 
 # PlantDoc test 27类 -> 训练39类(Mendeley命名)
 MAP = {
