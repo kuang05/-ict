@@ -60,6 +60,8 @@ PlantVillage 上训出的模型在**实验室均匀背景**下能到 99%，
 
 ```bash
 pip install -r requirements.txt
+# 配置 LLM（AMD LLMGateway，2026-10-16 实测可用；不配置也能跑，自动降级为模板应答）
+cp .env.example .env   # .env 内已填 AMD 免费额度的地址/模型名，填入 API Key 即可
 python -m uvicorn backend.main:app --port 8000
 # 浏览器打开 http://127.0.0.1:8000
 ```
@@ -70,6 +72,11 @@ python -m uvicorn backend.main:app --port 8000
 ```
 推理引擎**按精度优先**自动选择：`best_v11.pth`（最优单模型 67.92%）→ `best.pth` → MindSpore 昇腾产物 → 轻量兜底。
 类表从 ckpt 自带的 `classes` 读取，**不会出现模型与标签不匹配**。
+
+**LLM 接入**（农事报告润色 / RAG 问答 / 低置信度样本的 VLM 第二意见）：默认走
+AMD LLMGateway（OpenAI 兼容，`DeepSeek-V4-Flash` 文本 + `DeepSeek-V4.1-Flash` 视觉），
+三个环境变量即可切换任意兼容服务（含华为云 MaaS），详见 `.env.example`。
+`GET /api/health` 可查看当前 LLM 是否生效。
 
 ---
 
