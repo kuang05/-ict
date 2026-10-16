@@ -22,6 +22,7 @@ import json, os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from agent.knowledge_base import KnowledgeBase
 from agent.llm_client import LLMClient
+from agent.guards import hallucination_check, unknown_drug_check, unknown_drug_reply
 
 kb = KnowledgeBase()
 llm = LLMClient()
@@ -73,20 +74,33 @@ def _template_report(plan: dict, features: dict | None) -> str:
 
 # ------------------------------------------------------------- 编排入口
 def explain_diagnosis(pred_class: str, confidence: float, features: dict | None = None) -> dict:
-    """图像诊断 -> 结构化方案 + 自然语言报告(LLM可用则润色, 否则模板)。"""
+    """图像诊断 -> 结构化方案 + 自然语言报告(LLM可用则润色, 否则模板)。
+    防幻觉护栏: prompt 铁律 + 输出侧确定性校验(数字/药名必须落地于模板事实)。"""
     plan = treatment_plan(pred_class, confidence)
     report = _template_report(plan, features)
     if llm.enabled:
         prompt = (
-            "你是植保农技员。严格基于以下事实(不得编造新事实)改写成一段面向农户的通俗诊断报告，"
-            "保留所有用药名称与数字，200字以内:\n" + report)
-        refined = llm.chat([{"role": "user", "content": prompt}])
+            "你是植保农技员。把给定事实改写成面向农户的通俗诊断报告，200字以内。"
+            "铁律: 只允许使用给定事实中出现过的信息；禁止补充事实之外的任何药名、剂量、"
+            "天数、温度、百分比、防治措施——即使你认为它们在农业上是对的，也一律不许出现。"
+            "原话没有的，一个字都不能加。保留全部用药名称与数字（一字不改）:\n" + report)
+        refined = llm.chat([{"role": "user", "content": prompt}], temperature=0.2)
         if refined:
-            report = refined + "\n\n——以上由禾医智能体基于知识库事实生成"
+            bad = hallucination_check(refined, report, kb)
+            if bad:
+                print(f"[HeYi-护栏] 报告润色含{len(bad)}项未落地事实, 回退模板: {bad[:5]}")
+            else:
+                report = refined + "\n\n——以上由禾医智能体基于知识库事实生成"
     return {"plan": plan, "report": report, "llm_used": llm.enabled}
 
 def chat(question: str) -> dict:
-    """RAG问答: 知识库检索 -> 上下文注入 -> LLM/模板回答。"""
+    """RAG问答: 知识库检索 -> 上下文注入 -> LLM/模板回答。
+    防幻觉护栏: 输入侧假药拒绝 + prompt 铁律 + 输出侧确定性校验。"""
+    # 输入侧护栏: 未知/虚假农药 -> 拒绝给用法
+    unknown = unknown_drug_check(question, kb)
+    if unknown:
+        return {"answer": unknown_drug_reply(unknown), "refs": [], "llm_used": False,
+                "guard": "unknown-drug"}
     hits = kb_search(question, topk=2)
     ctx = "\n".join(
         f"[{i+1}] {info.get('name_cn','')}({cid}): 症状-{info.get('symptoms','-')}；"
@@ -95,10 +109,17 @@ def chat(question: str) -> dict:
     if llm.enabled:
         messages = [
             {"role": "system", "content":
-             "你是植保助手'禾医'。只依据给出的知识库片段回答，片段不足时明确说明需咨询当地植保站。"},
+             "你是植保助手'禾医'。只依据给出的知识库片段回答，片段不足时明确说明需咨询当地植保站。"
+             "铁律: 禁止补充片段之外的任何药名、剂量、天数、温度、百分比——即使你认为它们在农业上是对的。"
+             "原话没有的，一个字都不能加。"},
             {"role": "user", "content": f"知识库片段:\n{ctx}\n\n问题: {question}"},
         ]
-        ans = llm.chat(messages)
+        ans = llm.chat(messages, temperature=0.2)
+        if ans:
+            bad = hallucination_check(ans, ctx, kb)
+            if bad:
+                print(f"[HeYi-护栏] 问答含{len(bad)}项未落地事实, 回退模板: {bad[:5]}")
+                ans = None
         if ans:
             return {"answer": ans, "refs": [cid for cid, _, _ in hits], "llm_used": True}
     if hits:
