@@ -73,7 +73,11 @@ def main():
     if os.path.exists(td):
         shutil.rmtree(td)
     shutil.copytree(os.path.join(args.out, "test"), td, copy_function=os.link)
-    print(f"[pd_v3] test_clean 就绪 -> {td}")
+    # 协议说明（2026-10-17 核实）：test_clean = 452 张（与官方 test 一致）。
+    # 8 张泄漏样本是**从 train/val 剔除**的（train 6723→6720、val 1719→1714），
+    # test 保持不变——剔除后 test 中的对应 8 张已无训练侧重复，属干净样本。
+    # （早期文档误写"444 叶片"，是把 train/val 剔除的 8 张错算到 test 上，已修正。）
+    print(f"[pd_v3] test_clean = {len(index_md5(td))} 张（协议：452）-> {td}")
     print("[pd_v3] 重建完成 ✅")
 
 
