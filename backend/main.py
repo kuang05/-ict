@@ -12,6 +12,7 @@
   uvicorn backend.main:app --reload --port 8000
 """
 import io, json, os, sqlite3, sys, time
+import base64
 
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -69,6 +70,25 @@ async def diagnose(file: UploadFile = File(...)):
     top = result["predictions"][0]
     explained = heyi_agent.explain_diagnosis(top["class_name"], top["confidence"],
                                              result.get("features"))
+    # VLM 第二意见仲裁（原创机制）：仅低置信时调用，VLM 当复核员不当决策者
+    so = None
+    try:
+        from agent import second_opinion
+        if second_opinion.should_review(top["confidence"]) and heyi_agent.llm.enabled:
+            cands = result["predictions"][:3]
+            names_cn = [heyi_agent.treatment_plan(c["class_name"])["diagnosis"]["name_cn"]
+                        for c in cands]
+            so = second_opinion.arbitrate(
+                image_b64=base64.b64encode(raw).decode("utf-8"),
+                cnn_top3=cands, names_cn=names_cn,
+                llm=heyi_agent.llm, confidence=top["confidence"])
+            note = second_opinion.arbitrate_note(so)
+            if note:
+                explained["report"] = note + "\n\n" + explained["report"]
+                if so.get("verdict") == "disagree":
+                    explained["plan"]["escalation"] = (note + "\n" + explained["plan"].get("escalation", "")).strip()
+    except Exception as e:
+        print("[HeYi] second opinion skipped:", e)
     with db() as conn:
         conn.execute("INSERT INTO records(ts,class_name,name_cn,confidence,engine,report) VALUES(?,?,?,?,?,?)",
                      (time.strftime("%Y-%m-%d %H:%M:%S"), top["class_name"],
@@ -81,7 +101,28 @@ async def diagnose(file: UploadFile = File(...)):
         "features": result.get("features"),
         "plan": explained["plan"], "report": explained["report"],
         "llm_used": explained["llm_used"],
+        "second_opinion": so,
     })
+
+@app.post("/api/followup")
+async def followup(before: UploadFile = File(...), after: UploadFile = File(...)):
+    """复诊时序对比：同一叶片两次拍照 -> 疗效判定（改善/恶化/稳定）+ 建议。"""
+    from agent import followup as fu
+    outs = []
+    for f in (before, after):
+        raw = await f.read()
+        try:
+            img = Image.open(io.BytesIO(raw))
+        except Exception:
+            raise HTTPException(400, "无法解析图片，请上传JPG/PNG叶片照片")
+        outs.append(model_infer.predict(img))
+    cmp = fu.compare(outs[0], outs[1])
+    with db() as conn:
+        conn.execute("INSERT INTO records(ts,class_name,name_cn,confidence,engine,report) VALUES(?,?,?,?,?,?)",
+                     (time.strftime("%Y-%m-%d %H:%M:%S"), cmp["class_after"] or "",
+                      f"复诊:{cmp['verdict_cn']}", cmp["confidence_after"] or 0,
+                      outs[1]["engine"], cmp["advice"]))
+    return JSONResponse(cmp)
 
 @app.post("/api/chat")
 async def chat(payload: dict):
