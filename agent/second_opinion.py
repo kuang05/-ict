@@ -22,6 +22,7 @@
     if second_opinion.should_review(conf, tau=0.6):
         so = second_opinion.arbitrate(image_b64=b64, cnn_top3=preds, llm=llm)
 """
+from __future__ import annotations
 import json
 import os
 import re
